@@ -1,6 +1,8 @@
-# SignUp-SignIn-BoilerPlater
+# SignUp SignIn BoilerPlater
 ## ⚡️ UNDER CONSTRUCTION ⚡️
-This repository is a boiler plate for an API REST
+This repository is a boiler plate for an API REST  
+It has the structure to sign up and sign an user.
+
 
 It was developed with TypeScript + Node.JS.
 
