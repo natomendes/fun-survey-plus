@@ -1,6 +1,5 @@
 import { Encrypter } from '../../../src/data/protocols/encrypter'
 import { DbAddAccount } from '../../../src/data/usecases/add-account/db-add-account'
-import { AddAccount } from '../../../src/domain/usecases/add-account'
 
 const makeEncrypterStub = (): Encrypter => {
   class EncrypterStub implements Encrypter {
@@ -13,7 +12,7 @@ const makeEncrypterStub = (): Encrypter => {
 
 interface SutTypes {
   encrypterStub: Encrypter
-  sut: AddAccount
+  sut: DbAddAccount
 }
 
 const makeSut = (): SutTypes => {
