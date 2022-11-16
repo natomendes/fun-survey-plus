@@ -1,6 +1,6 @@
 import { SignUpController } from '../../../src/presentation/controllers/signup/signup-controller'
 import { InvalidParamError, MissingParamError, ServerError } from '../../../src/presentation/errors'
-import { EmailValidator, AccountModel, AddAccount, AddAccountModel } from '../../../src/presentation/controllers/signup/signup-protocols'
+import { EmailValidator, AddAccount, AddAccountModel } from '../../../src/presentation/controllers/signup/signup-protocols'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -13,14 +13,8 @@ const makeEmailValidator = (): EmailValidator => {
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add (account: AddAccountModel): Promise<AccountModel> {
-      const fakeAccount = {
-        id: 'valid_id',
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password'
-      }
-      return await new Promise(resolve => resolve(fakeAccount))
+    async add (account: AddAccountModel): Promise<boolean> {
+      return await new Promise(resolve => resolve(true))
     }
   }
   return new AddAccountStub()
@@ -216,11 +210,6 @@ describe('SignUpController', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse?.statusCode).toBe(200)
-    expect(httpResponse?.body).toEqual({
-      id: 'valid_id',
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
-      password: 'valid_password'
-    })
+    expect(httpResponse?.body).toBe(true)
   })
 })
