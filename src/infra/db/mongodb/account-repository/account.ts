@@ -8,6 +8,6 @@ export class AccountMongoRepository implements AddAccountRepository {
 
     const { insertedId } = await accountCollection.insertOne(accountData)
 
-    return insertedId !== null
+    return insertedId === null
   }
 }
