@@ -5,7 +5,7 @@ interface IMongoHelper {
   connect: (url: string) => Promise<void>
   disconnect: () => Promise<void>
   getCollection: (name: string) => Collection
-  map: <T>(data: any) => T
+  // map: <T>(data: any) => T
 }
 
 export const MongoHelper: IMongoHelper = {
@@ -20,10 +20,9 @@ export const MongoHelper: IMongoHelper = {
 
   getCollection (name: string): Collection {
     return this.client.db().collection(name)
-  },
-
-  map<T> (data: any): T {
-    const { _id, ...rest } = data
-    return { ...rest, id: _id.toHexString() }
   }
+  // map<T> (data: any): T {
+  //   const { _id, ...rest } = data
+  //   return { ...rest, id: _id.toHexString() }
+  // }
 }
