@@ -141,7 +141,7 @@ describe('SignUpController', () => {
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
   })
 
-  it('Should return 500 if AddAccount throws', async () => {
+  it('Should return server error if AddAccount throws', async () => {
     const { sut, addAccountStub } = makeSut()
     jest.spyOn(addAccountStub, 'add')
       .mockImplementationOnce(async () => {
@@ -164,7 +164,7 @@ describe('SignUpController', () => {
     })
   })
 
-  it('Should return 200 if valid data is provided', async () => {
+  it('Should return ok if valid data is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = makeFakeRequest()
     const httpResponse = await sut.handle(httpRequest)
