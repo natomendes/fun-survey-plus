@@ -1,6 +1,6 @@
 import { LoginController } from '../../../src/presentation/controllers/login/login-controller'
 import { InvalidParamError, MissingParamError, ServerError } from '../../../src/presentation/errors'
-import { badRequest, serverError, unauthorized } from '../../../src/presentation/helpers/http-helper'
+import { badRequest, ok, serverError, unauthorized } from '../../../src/presentation/helpers/http-helper'
 import { HttpRequest, EmailValidator, Authentication } from '../../../src/presentation/controllers/login/login-protocols'
 
 const makeEmailValidator = (): EmailValidator => {
@@ -112,5 +112,12 @@ describe('Login Controller', () => {
       .mockRejectedValueOnce(new Error())
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
+  })
+
+  it('Should return ok if valid data is provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = makeFakeRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(ok({ accessToken: 'valid_token' }))
   })
 })
