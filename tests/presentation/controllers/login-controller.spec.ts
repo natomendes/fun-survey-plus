@@ -116,8 +116,7 @@ describe('Login Controller', () => {
 
   it('Should return ok if valid data is provided', async () => {
     const { sut } = makeSut()
-    const httpRequest = makeFakeRequest()
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(ok({ accessToken: 'valid_token' }))
   })
 })
