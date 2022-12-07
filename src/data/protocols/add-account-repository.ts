@@ -1,4 +1,4 @@
-import { AddAccountModel } from '../../domain/usecases/add-account'
+import { AddAccountModel } from '../../domain/usecases'
 
 export interface AddAccountRepository {
   add: (account: AddAccountModel) => Promise<boolean>
