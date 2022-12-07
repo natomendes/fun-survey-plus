@@ -114,7 +114,7 @@ describe('SignUpController', () => {
     expect(httpResponse).toEqual(badRequest(new InvalidParamError('passwordConfirmation')))
   })
 
-  it('Should return 400 if an invalid email is provided', async () => {
+  it('Should return bad request if an invalid email is provided', async () => {
     const { sut, emailValidatorStub } = makeSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
     const httpRequest = makeFakeRequest()
