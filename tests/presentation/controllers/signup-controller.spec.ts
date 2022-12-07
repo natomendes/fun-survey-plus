@@ -48,7 +48,7 @@ const makeSut = (): SutTypes => {
 }
 
 describe('SignUpController', () => {
-  it('Should return 400 if no name is provided', async () => {
+  it('Should return bad request if no name is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
