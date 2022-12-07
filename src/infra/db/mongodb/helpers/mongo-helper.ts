@@ -2,7 +2,8 @@ import { Collection, MongoClient } from 'mongodb'
 
 interface IMongoHelper {
   client: MongoClient | null
-  connect: (url: string) => Promise<void>
+
+  connect: (uri: string) => Promise<void>
   disconnect: () => Promise<void>
   getCollection: (name: string) => Collection
   // map: <T>(data: any) => T
@@ -10,12 +11,13 @@ interface IMongoHelper {
 
 export const MongoHelper: IMongoHelper = {
   client: null,
-  async connect (url: string) {
-    this.client = await MongoClient.connect(url)
+  async connect (uri: string): Promise<void> {
+    this.client = await MongoClient.connect(uri)
   },
 
   async disconnect () {
     await this.client.close()
+    this.client = null
   },
 
   getCollection (name: string): Collection {

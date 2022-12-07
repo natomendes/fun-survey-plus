@@ -95,8 +95,7 @@ describe('SignUpController', () => {
   })
 
   it('Should return 400 if password confirmation fails', async () => {
-    const { sut, emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
+    const { sut } = makeSut()
     const httpRequest = {
       body: {
         name: 'any_name',
