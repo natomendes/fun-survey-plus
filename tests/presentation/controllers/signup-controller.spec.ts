@@ -61,7 +61,7 @@ describe('SignUpController', () => {
     expect(httpResponse).toEqual(badRequest(new MissingParamError('name')))
   })
 
-  it('Should return 400 if no email is provided', async () => {
+  it('Should return bad request if no email is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -74,7 +74,7 @@ describe('SignUpController', () => {
     expect(httpResponse).toEqual(badRequest(new MissingParamError('email')))
   })
 
-  it('Should return 400 if no password is provided', async () => {
+  it('Should return bad request if no password is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
