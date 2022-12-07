@@ -1,16 +1,7 @@
 import { Collection, MongoClient } from 'mongodb'
 
-interface IMongoHelper {
-  client: MongoClient | null
-
-  connect: (uri: string) => Promise<void>
-  disconnect: () => Promise<void>
-  getCollection: (name: string) => Collection
-  // map: <T>(data: any) => T
-}
-
-export const MongoHelper: IMongoHelper = {
-  client: null,
+export const MongoHelper = {
+  client: null as MongoClient,
   async connect (uri: string): Promise<void> {
     this.client = await MongoClient.connect(uri)
   },
