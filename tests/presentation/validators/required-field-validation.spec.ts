@@ -16,7 +16,14 @@ describe('Required Field Validation', () => {
   it('Should return MissingParamError if validation fails', () => {
     const field = faker.database.column()
     const { sut } = makeSut(field)
-    const error = sut.validate({ field: '' })
+    const error = sut.validate({ name: '' })
     expect(error).toEqual(new MissingParamError(field))
+  })
+
+  it('Should return null if validation succeeds', () => {
+    const field = faker.database.column()
+    const { sut } = makeSut(field)
+    const error = sut.validate({ [field]: faker.random.word() })
+    expect(error).toBe(null)
   })
 })
