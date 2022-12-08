@@ -1,6 +1,6 @@
 import { MissingParamError } from '../../../src/presentation/errors'
 import { RequiredFieldValidation } from '../../../src/presentation/validators'
-
+import { faker } from '@faker-js/faker'
 interface SutTypes {
   sut: RequiredFieldValidation
 }
@@ -14,8 +14,9 @@ const makeSut = (fieldName: string): SutTypes => {
 
 describe('Required Field Validation', () => {
   it('Should return MissingParamError if validation fails', () => {
-    const { sut } = makeSut('any_field')
-    const error = sut.validate({ any_field: '' })
-    expect(error).toEqual(new MissingParamError('any_field'))
+    const field = faker.database.column()
+    const { sut } = makeSut(field)
+    const error = sut.validate({ field: '' })
+    expect(error).toEqual(new MissingParamError(field))
   })
 })
