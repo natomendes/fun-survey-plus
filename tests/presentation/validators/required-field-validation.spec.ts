@@ -24,6 +24,6 @@ describe('Required Field Validation', () => {
     const field = faker.database.column()
     const { sut } = makeSut(field)
     const error = sut.validate({ [field]: faker.random.word() })
-    expect(error).toBe(null)
+    expect(error).toBe(false)
   })
 })
