@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { AccountModel } from '@/domain/models/account'
 import { HashComparer, LoadAccountByEmailRepository, TokenGenerator, UpdateAccessTokenRepository } from '@/data/protocols'
-import { DbAuthentication } from '@/data/usecases/authentication/db-authentication'
+import { DbAuthentication } from '@/data/usecases/authentication'
 import { AuthenticationModel } from '@/domain/usecases'
 
 const makeFakeAccount = (): AccountModel => ({
