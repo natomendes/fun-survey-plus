@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { AccountModel } from '@/domain/models/account'
-import { HashComparer, LoadAccountByEmailRepository, TokenGenerator, UpdateAccessTokenRepository } from '@/data/protocols'
+import { HashComparer, LoadAccountByEmailRepository, Encrypter, UpdateAccessTokenRepository } from '@/data/protocols'
 import { DbAuthentication } from '@/data/usecases/authentication'
 import { AuthenticationModel } from '@/domain/usecases'
 
@@ -34,13 +34,13 @@ const makeHashComparer = (): HashComparer => {
   return new HashComparerStub()
 }
 
-const makeTokenGenerator = (token: string): TokenGenerator => {
-  class TokenGeneratorStub implements TokenGenerator {
-    async generate (userId: string): Promise<string> {
+const makeEncrypter = (token: string): Encrypter => {
+  class EncrypterStub implements Encrypter {
+    async encrypt (_userId: string): Promise<string> {
       return token
     }
   }
-  return new TokenGeneratorStub()
+  return new EncrypterStub()
 }
 
 const makeUpdateAccessTokenRepository = (): UpdateAccessTokenRepository => {
@@ -54,26 +54,26 @@ interface SutTypes {
   sut: DbAuthentication
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
   hashComparerStub: HashComparer
-  tokenGeneratorStub: TokenGenerator
+  encrypterStub: Encrypter
   updateAccessTokenRepositoryStub: UpdateAccessTokenRepository
 }
 
 const makeSut = ({ account = makeFakeAccount(), token = faker.datatype.uuid() }): SutTypes => {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository(account)
   const hashComparerStub = makeHashComparer()
-  const tokenGeneratorStub = makeTokenGenerator(token)
+  const encrypterStub = makeEncrypter(token)
   const updateAccessTokenRepositoryStub = makeUpdateAccessTokenRepository()
   const sut = new DbAuthentication(
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
-    tokenGeneratorStub,
+    encrypterStub,
     updateAccessTokenRepositoryStub
   )
   return {
     sut,
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
-    tokenGeneratorStub,
+    encrypterStub,
     updateAccessTokenRepositoryStub
   }
 }
@@ -113,7 +113,7 @@ describe('DbAuthentication UseCase', () => {
     expect(compareSpy).toHaveBeenCalledWith(authentication.password, account.password)
   })
 
-  it('Should throw if LoadAccountByEmailRepository throws', async () => {
+  it('Should throw if HashComparer throws', async () => {
     const { sut, hashComparerStub } = makeSut({})
     jest.spyOn(hashComparerStub, 'compare')
       .mockRejectedValueOnce(new Error())
@@ -129,18 +129,18 @@ describe('DbAuthentication UseCase', () => {
     expect(accessToken).toBeFalsy()
   })
 
-  it('Should call TokenGenerator with correct id', async () => {
+  it('Should call Encrypter with correct id', async () => {
     const account = makeFakeAccount()
-    const { sut, tokenGeneratorStub } = makeSut({ account })
-    const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate')
+    const { sut, encrypterStub } = makeSut({ account })
+    const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
 
     await sut.auth(makeFakeAuthentication())
-    expect(generateSpy).toHaveBeenCalledWith(account.id)
+    expect(encryptSpy).toHaveBeenCalledWith(account.id)
   })
 
-  it('Should throw if LoadAccountByEmailRepository throws', async () => {
-    const { sut, tokenGeneratorStub } = makeSut({})
-    jest.spyOn(tokenGeneratorStub, 'generate')
+  it('Should throw if Encrypter throws', async () => {
+    const { sut, encrypterStub } = makeSut({})
+    jest.spyOn(encrypterStub, 'encrypt')
       .mockRejectedValueOnce(new Error())
     const promise = sut.auth(makeFakeAuthentication())
     await expect(promise).rejects.toThrow(new Error())
@@ -163,7 +163,7 @@ describe('DbAuthentication UseCase', () => {
     expect(updateSpy).toHaveBeenCalledWith(account.id, token)
   })
 
-  it('Should throw if LoadAccountByEmailRepository throws', async () => {
+  it('Should throw if updateAccessTokenRepositoryStub throws', async () => {
     const { sut, updateAccessTokenRepositoryStub } = makeSut({})
     jest.spyOn(updateAccessTokenRepositoryStub, 'update')
       .mockRejectedValueOnce(new Error())
