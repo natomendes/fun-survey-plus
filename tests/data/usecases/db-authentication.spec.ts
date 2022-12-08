@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { AccountModel } from '@/domain/models/account'
-import { LoadAccountByEmailRepository } from '@/data/protocols/load-account-by-email-repository'
+import { LoadAccountByEmailRepository } from '@/data/protocols/db/load-account-by-email-repository'
 import { DbAuthentication } from '@/data/usecases/authentication/db-authentication'
 import { AuthenticationModel } from '@/domain/usecases'
 
@@ -47,6 +47,7 @@ describe('DbAuthentication UseCase', () => {
     await sut.auth(makeFakeAuthentication(email))
     expect(loadSpy).toHaveBeenCalledWith(email)
   })
+
   it('Should throw if LoadAccountByEmailRepository throws', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut()
     jest.spyOn(loadAccountByEmailRepositoryStub, 'load')
