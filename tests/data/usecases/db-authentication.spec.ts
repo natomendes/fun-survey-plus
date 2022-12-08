@@ -2,16 +2,23 @@ import { faker } from '@faker-js/faker'
 import { AccountModel } from '@/domain/models/account'
 import { LoadAccountByEmailRepository } from '@/data/protocols/load-account-by-email-repository'
 import { DbAuthentication } from '@/data/usecases/authentication/db-authentication'
+import { AuthenticationModel } from '@/domain/usecases'
 
-const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
+const makeFakeAccount = (): AccountModel => ({
+  id: faker.datatype.uuid(),
+  name: faker.name.fullName(),
+  email: faker.internet.email(),
+  password: faker.datatype.uuid()
+})
+
+const makeFakeAuthentication = (email = faker.internet.email(), password = faker.internet.password()): AuthenticationModel => ({
+  email,
+  password
+})
+
+const makeLoadAccountByEmailRepository = (account: AccountModel): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-    async load (email: string): Promise<AccountModel> {
-      const account: AccountModel = {
-        id: 'any_id',
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'hashed_password'
-      }
+    async load (_email: string): Promise<AccountModel> {
       return account
     }
   }
@@ -23,8 +30,8 @@ interface SutTypes {
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
 }
 
-const makeSut = (): SutTypes => {
-  const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository()
+const makeSut = (account = makeFakeAccount()): SutTypes => {
+  const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository(account)
   const sut = new DbAuthentication(loadAccountByEmailRepositoryStub)
   return {
     sut,
@@ -37,10 +44,7 @@ describe('DbAuthentication UseCase', () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut()
     const loadSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'load')
     const email = faker.internet.email()
-    await sut.auth({
-      email,
-      password: faker.internet.password()
-    })
+    await sut.auth(makeFakeAuthentication(email))
     expect(loadSpy).toHaveBeenCalledWith(email)
   })
 })
