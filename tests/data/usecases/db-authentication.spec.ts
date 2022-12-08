@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { AccountModel } from '@/domain/models/account'
-import { LoadAccountByEmailRepository } from '@/data/protocols/db/load-account-by-email-repository'
+import { HashComparer, LoadAccountByEmailRepository } from '@/data/protocols'
 import { DbAuthentication } from '@/data/usecases/authentication/db-authentication'
 import { AuthenticationModel } from '@/domain/usecases'
 
@@ -25,17 +25,29 @@ const makeLoadAccountByEmailRepository = (account: AccountModel): LoadAccountByE
   return new LoadAccountByEmailRepositoryStub()
 }
 
+const makeHashComparer = (): HashComparer => {
+  class HashComparerStub implements HashComparer {
+    async compare (value: string, hash: string): Promise<boolean> {
+      return true
+    }
+  }
+  return new HashComparerStub()
+}
+
 interface SutTypes {
   sut: DbAuthentication
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
+  hashComparerStub: HashComparer
 }
 
 const makeSut = (account = makeFakeAccount()): SutTypes => {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository(account)
-  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub)
+  const hashComparerStub = makeHashComparer()
+  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub)
   return {
     sut,
-    loadAccountByEmailRepositoryStub
+    loadAccountByEmailRepositoryStub,
+    hashComparerStub
   }
 }
 
@@ -62,5 +74,15 @@ describe('DbAuthentication UseCase', () => {
       .mockResolvedValueOnce(null)
     const accessToken = await sut.auth(makeFakeAuthentication())
     expect(accessToken).toBe(null)
+  })
+
+  it('Should call HashComparer with correct values', async () => {
+    const account = makeFakeAccount()
+    const authentication = makeFakeAuthentication()
+    const { sut, hashComparerStub } = makeSut(account)
+    const compareSpy = jest.spyOn(hashComparerStub, 'compare')
+
+    await sut.auth(authentication)
+    expect(compareSpy).toHaveBeenCalledWith(authentication.password, account.password)
   })
 })
