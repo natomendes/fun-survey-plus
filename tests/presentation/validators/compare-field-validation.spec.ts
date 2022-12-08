@@ -12,12 +12,20 @@ const makeSut = (fieldName = faker.database.column(), fieldToCompareName = faker
   }
 }
 
-describe('Required Field Validation', () => {
+describe('Compare Field Validation', () => {
   it('Should return InvalidParamError if comparison fails', () => {
-    const field = faker.database.column()
+    const field = faker.random.word()
     const fieldToCompareName = faker.database.column()
     const { sut } = makeSut(field, fieldToCompareName)
     const error = sut.validate({ [field]: '123', [fieldToCompareName]: '12' })
     expect(error).toEqual(new InvalidParamError(fieldToCompareName))
+  })
+
+  it('Should return false if validation succeeds', () => {
+    const field = faker.database.column()
+    const fieldToCompareName = faker.database.column()
+    const { sut } = makeSut(field, fieldToCompareName)
+    const error = sut.validate({ [field]: '123', [fieldToCompareName]: '123' })
+    expect(error).toBe(false)
   })
 })
