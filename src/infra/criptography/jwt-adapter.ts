@@ -3,9 +3,8 @@ import { Encrypter } from '@/data/protocols'
 
 export class JwtAdapter implements Encrypter {
   constructor (private readonly secret: string) {}
-  async encrypt (value: string): Promise<string> {
-    jwt.sign({ id: value }, this.secret)
 
-    return null
+  async encrypt (value: string): Promise<string> {
+    return jwt.sign({ id: value }, this.secret)
   }
 }
