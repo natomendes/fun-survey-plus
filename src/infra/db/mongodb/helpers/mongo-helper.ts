@@ -13,9 +13,10 @@ export const MongoHelper = {
 
   getCollection (name: string): Collection {
     return this.client.db().collection(name)
+  },
+
+  map<T> (data: any): T {
+    const { _id, ...rest } = data
+    return { ...rest, id: _id.toHexString() }
   }
-  // map<T> (data: any): T {
-  //   const { _id, ...rest } = data
-  //   return { ...rest, id: _id.toHexString() }
-  // }
 }
