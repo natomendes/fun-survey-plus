@@ -17,7 +17,7 @@ services:
     restart: always
     command: npm start
     volumes:
-      - ./dist:/api/dist
+      - ./dist:/usr/src/api/dist
     ports:
       - "5050:5050"
     depends_on:
@@ -25,5 +25,3 @@ services:
     environment:
       - MONGO_URL=mongodb://mongo:27017/api-db
       - JWT_SECRET=e8U-=!kd
-
-    

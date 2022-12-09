@@ -1,7 +1,9 @@
-FROM node:16-alpine
+FROM node:16
 
-WORKDIR /api
+WORKDIR /usr/src/api
 
 COPY package.json .
 
-RUN npm install --only-prod
+RUN npm install
+
+COPY ./dist ./dist
