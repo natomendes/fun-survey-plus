@@ -6,6 +6,10 @@ It has the structure to sign up and sign an user.
 
 It was developed with TypeScript + Node.JS.
 
+> ## APIs documentations
+1. [Sign Up](./requirements/signup.md)
+2. [Sign In](./requirements/login.md)
+
 ### Following good practices like:
  - Single Responsibility Principle (SRP)
  - Open Closed Principle (OCP)
