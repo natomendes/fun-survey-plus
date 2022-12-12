@@ -11,7 +11,7 @@
   "author": "Renato Mendes",
   "license": "ISC",
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "npx husky install",
     "start": "node dist/main/server.js",
     "debug": "node --inspect=0.0.0.0:9222 --nolazy dist/main/server.js",
     "up": "npm run build && docker-compose up -d",
