@@ -1,7 +1,7 @@
 import { SignUpController } from '@/presentation/controllers/signup/signup-controller'
-import { MissingParamError, ServerError } from '@/presentation/errors'
+import { EmailInUseError, MissingParamError, ServerError } from '@/presentation/errors'
 import { AddAccount, AddAccountModel, Authentication, AuthenticationModel, HttpRequest, Validation } from '@/presentation/controllers/signup/signup-protocols'
-import { badRequest, ok, serverError } from '@/presentation/helpers/http-helper'
+import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http-helper'
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
@@ -83,13 +83,12 @@ describe('SignUpController', () => {
     })
   })
 
-  it('Should return ok if valid data is provided', async () => {
-    const { sut } = makeSut()
+  it('Should return forbidden if email is already in use', async () => {
+    const { sut, addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub, 'add').mockResolvedValueOnce(null)
     const httpRequest = makeFakeRequest()
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(ok({
-      accessToken: 'valid_token'
-    }))
+    expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
   })
 
   it('Should call Validation with correct values', async () => {
@@ -122,5 +121,14 @@ describe('SignUpController', () => {
       .mockRejectedValueOnce(new Error())
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
+  })
+
+  it('Should return ok if valid data is provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = makeFakeRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(ok({
+      accessToken: 'valid_token'
+    }))
   })
 })
