@@ -13,6 +13,7 @@
   "scripts": {
     "prepare": "husky install",
     "start": "node dist/main/server.js",
+    "debug": "node --inspect=0.0.0.0:9222 --nolazy dist/main/server.js",
     "up": "npm run build && docker-compose up -d",
     "down": "docker-compose down",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
