@@ -17,7 +17,7 @@ services:
     restart: always
     command: bash -c "npm install --omit=dev && npm run debug"
     volumes:
-      - ./dist:/usr/src/api/dist
+      - ./dist/:/usr/src/api/dist/
       - ./package.json:/usr/src/api/package.json
     ports:
       - "5050:5050"
