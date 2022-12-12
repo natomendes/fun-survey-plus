@@ -6,7 +6,7 @@
 2. ✅ Validate required fields **name**, **email**, **password** and **passwordConfirmation**.
 3. ✅ Validate if **password** and **passwordConfirmation** match.
 4. ✅ Validate if **email** is a valid e-mail.
-5. ❌ **Validate** if an user with the provided email already exists.
+5. ✅ **Validate** if an user with the provided email already exists.
 6. ✅ Generate an **hashed** password.
 7. ✅ **Create** an user account with the data provided, **replacing** the password with the hashed password.
 8. ✅ Generate an access **token** from the user ID.
