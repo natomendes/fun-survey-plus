@@ -2,23 +2,25 @@ version: '3'
 
 services:
   mongo:
-    container_name: mongo-container
+    container_name: survey-mongo-container
     image: mongo:6.0.3-focal
     restart: always
     volumes:
       - ./data:/data/db
     ports:
       - "27017:27017"
+    env_file:
+      - ./.env
   
   api:
-    container_name: api-container
+    container_name: survey-api-container
     image: node:16
-    working_dir: /usr/src/api
+    working_dir: /api
     restart: always
     command: bash -c "npm install --omit=dev && npm run debug"
     volumes:
-      - ./dist/:/usr/src/api/dist/
-      - ./package.json:/usr/src/api/package.json
+      - ./dist/:/api/dist/
+      - ./package.json:/api/package.json
     ports:
       - "5050:5050"
       - "9222:9222"
