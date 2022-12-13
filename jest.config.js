@@ -12,6 +12,7 @@ module.exports = {
     '.+\\.ts$': 'ts-jest'
   },
   roots: ['<rootDir>/tests'],
+  setupFiles: ['<rootDir>/testEnvVars.ts'],
   moduleNameMapper: {
     '@/tests/(.*)': '<rootDir>/tests/$1',
     '@/(.*)': '<rootDir>/src/$1'

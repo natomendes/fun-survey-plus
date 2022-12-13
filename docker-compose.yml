@@ -22,8 +22,6 @@ services:
     ports:
       - "5050:5050"
       - "9222:9222"
-    depends_on:
-      - mongo
     env_file:
     - ./.env
 
