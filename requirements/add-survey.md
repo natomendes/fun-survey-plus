@@ -6,7 +6,7 @@
 2. ❌ Validate if was made by an **admin**.
 3. ❌ Validate required fields **question** and **answers**.
 4. ❌ **Create** a survey.
-5. ❌ Returns **204**.
+5. ✅ Returns **204**.
 
 > ## Exceptions
 
