@@ -1,5 +1,5 @@
 import { MissingParamError } from '@/presentation/errors'
-import { RequiredFieldValidation } from '@/presentation/validators'
+import { RequiredFieldValidation } from '@/validations/validators'
 import { faker } from '@faker-js/faker'
 interface SutTypes {
   sut: RequiredFieldValidation
