@@ -3,3 +3,4 @@ dist
 coverage
 data
 !src/data
+!tests/data
