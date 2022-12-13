@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker'
 import { AddSurvey, AddSurveyModel, HttpRequest, Validation } from '@/presentation/controllers/add-survey/add-survey-protocols'
 import { AddSurveyController } from '@/presentation/controllers/add-survey/add-survey-controller'
-import { MissingParamError } from '@/presentation/errors'
-import { badRequest } from '@/presentation/helpers/http-helper'
+import { MissingParamError, ServerError } from '@/presentation/errors'
+import { badRequest, serverError } from '@/presentation/helpers/http-helper'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -70,5 +70,12 @@ describe('AddSurvey Controller', () => {
     const httpRequest = makeFakeRequest()
     await sut.handle(httpRequest)
     expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  it('Should return server error if AddSurvey throws', async () => {
+    const { sut, addSurveyStub } = makeSut()
+    jest.spyOn(addSurveyStub, 'add').mockRejectedValueOnce(new ServerError('any_stack'))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
   })
 })
