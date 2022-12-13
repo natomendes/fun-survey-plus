@@ -1,10 +1,9 @@
 # SignUp SignIn BoilerPlater
-## ⚡️ UNDER CONSTRUCTION ⚡️
 This repository is a boiler plate for an API REST  
 It has the structure to sign up and sign an user.
 
 
-It was developed with TypeScript + Node.JS.
+It was developed with TypeScript + Node.JS + Jest + Docker.
 
 > ## APIs documentations
 1. [Sign Up](./requirements/signup.md)
@@ -43,7 +42,7 @@ It was developed with TypeScript + Node.JS.
  - Modular Design
  - Dependency Diagrams
  - Use Cases
- - Continuous Integration
- - Continuous Delivery
- - Continuous Deployment
+ - Continuous Integration (to be implemented)
+ - Continuous Delivery (to be implemented)
+ - Continuous Deployment (to be implemented)
  
