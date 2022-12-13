@@ -2,13 +2,19 @@ import { faker } from '@faker-js/faker'
 import { AccessDeniedError } from '@/presentation/errors'
 import { forbidden } from '@/presentation/helpers/http-helper'
 import { AuthMiddleware } from '@/presentation/middlewares/auth-middleware'
-import { LoadAccountByToken, AccountModel } from '@/presentation/middlewares/middlewares-protocols'
+import { LoadAccountByToken, AccountModel, HttpRequest } from '@/presentation/middlewares/middlewares-protocols'
 
 const makeFakeAccount = (): AccountModel => ({
   id: faker.datatype.uuid(),
   name: faker.name.fullName(),
   email: faker.internet.email(),
   password: faker.datatype.uuid()
+})
+
+const makeFakeRequest = (token = faker.datatype.uuid()): HttpRequest => ({
+  headers: {
+    'x-access-token': token
+  }
 })
 
 const makeLoadAccountByTokenStub = (account: AccountModel): LoadAccountByToken => {
@@ -45,12 +51,7 @@ describe('Auth Middleware', () => {
     const { sut, loadAccountByTokenStub } = makeSut()
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
     const token = faker.datatype.uuid()
-    const httpRequest = {
-      headers: {
-        'x-access-token': token
-      }
-    }
-    await sut.handle(httpRequest)
+    await sut.handle(makeFakeRequest(token))
     expect(loadSpy).toHaveBeenCalledWith(token)
   })
 })
