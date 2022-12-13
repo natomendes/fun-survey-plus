@@ -24,6 +24,6 @@ services:
       - "9222:9222"
     depends_on:
       - mongo
-    environment:
-      - MONGO_URL=mongodb://mongo:27017/api-db
-      - JWT_SECRET=e8U-=!kd
+    env_file:
+    - ./.env
+
