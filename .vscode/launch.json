@@ -4,7 +4,7 @@
     "type": "node",
     "request": "attach",
     "name": "Docker: Attach to Node",
-    "remoteRoot": "/usr/src/api",
+    "remoteRoot": "/api",
     "port": 9222,
     "restart": true
   }]
