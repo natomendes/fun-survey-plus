@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import MockDate from 'mockdate'
 import { DbAddSurvey } from '@/data/usecases'
 import { AddSurveyModel, AddSurveyRepository } from '@/data/usecases/usecases-protocols'
 
@@ -14,7 +15,8 @@ const makeFakeAddSurveyData = (): AddSurveyModel => ({
   answers: [{
     image: faker.datatype.string(),
     answer: faker.datatype.string()
-  }]
+  }],
+  date: new Date()
 })
 
 interface SutTypes {
@@ -32,6 +34,14 @@ const makeSut = (): SutTypes => {
 }
 
 describe('DbAddSurvey Usecase', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
   it('Should call AddSurveyRepository with correct values', async () => {
     const { sut, addSurveyRepositoryStub } = makeSut()
     const addSpy = jest.spyOn(addSurveyRepositoryStub, 'add')

@@ -10,7 +10,8 @@ const makeFakeAddSurveyData = (): AddSurveyModel => ({
     answer: faker.datatype.string()
   }, {
     answer: faker.datatype.string()
-  }]
+  }],
+  date: new Date()
 })
 
 const makeSut = (): SurveyMongoRepository => {

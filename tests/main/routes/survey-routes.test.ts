@@ -2,11 +2,10 @@ import request from 'supertest'
 import { Collection } from 'mongodb'
 import { faker } from '@faker-js/faker'
 import app from '@/main/config/app'
-import { AddSurveyModel } from '@/domain/usecases'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
 import { sign } from 'jsonwebtoken'
 
-const makeFakeAddSurveyData = (): AddSurveyModel => ({
+const makeFakeAddSurveyData = (): any => ({
   question: faker.random.words(),
   answers: [{
     image: faker.internet.url(),
