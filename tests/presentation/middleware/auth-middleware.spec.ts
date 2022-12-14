@@ -31,9 +31,9 @@ interface SutTypes {
   loadAccountByTokenStub: LoadAccountByToken
 }
 
-const makeSut = (account = makeFakeAccount()): SutTypes => {
+const makeSut = (role?: string, account = makeFakeAccount()): SutTypes => {
   const loadAccountByTokenStub = makeLoadAccountByTokenStub(account)
-  const sut = new AuthMiddleware(loadAccountByTokenStub)
+  const sut = new AuthMiddleware(loadAccountByTokenStub, role)
   return {
     sut,
     loadAccountByTokenStub
@@ -48,11 +48,12 @@ describe('Auth Middleware', () => {
   })
 
   it('Should call LoadAccountByToken with correct access token', async () => {
-    const { sut, loadAccountByTokenStub } = makeSut()
+    const role = faker.database.column()
+    const { sut, loadAccountByTokenStub } = makeSut(role)
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
     const token = faker.datatype.uuid()
     await sut.handle(makeFakeRequest(token))
-    expect(loadSpy).toHaveBeenCalledWith(token)
+    expect(loadSpy).toHaveBeenCalledWith(token, role)
   })
 
   it('Should return forbidden if LoadAccountByToken returns falsy', async () => {
@@ -64,7 +65,7 @@ describe('Auth Middleware', () => {
 
   it('Should return ok if LoadAccountByToken returns an account', async () => {
     const account = makeFakeAccount()
-    const { sut } = makeSut(account)
+    const { sut } = makeSut(null, account)
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(ok({ accountId: account.id }))
   })
