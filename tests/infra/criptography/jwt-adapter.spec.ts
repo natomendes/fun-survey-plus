@@ -2,6 +2,18 @@ import jwt from 'jsonwebtoken'
 import { JwtAdapter } from '@/infra/criptography/jwt-adapter'
 import { faker } from '@faker-js/faker'
 
+const token = faker.datatype.uuid()
+const decryptedToken = faker.datatype.string()
+jest.mock('jsonwebtoken', () => ({
+  sign (): string {
+    return token
+  },
+
+  verify (): string {
+    return decryptedToken
+  }
+}))
+
 const makeSut = (secret = faker.datatype.uuid()): JwtAdapter => {
   return new JwtAdapter(secret)
 }
@@ -20,8 +32,6 @@ describe('Jwt Adapter', () => {
 
     it('Should return a token on jwt sign success', async () => {
       const sut = makeSut()
-      const token = faker.datatype.uuid()
-      jest.spyOn(jwt, 'sign').mockImplementationOnce(() => token)
 
       const accessToken = await sut.encrypt(faker.datatype.uuid())
 
@@ -35,6 +45,17 @@ describe('Jwt Adapter', () => {
       const promise = sut.encrypt(faker.datatype.uuid())
 
       await expect(promise).rejects.toThrow()
+    })
+  })
+
+  describe('verify()', () => {
+    it('Should call verify with correct values', async () => {
+      const secret = faker.datatype.uuid()
+      const sut = makeSut(secret)
+      const verifySpy = jest.spyOn(jwt, 'verify')
+      await sut.decrypt(token)
+
+      expect(verifySpy).toHaveBeenCalledWith(token, secret)
     })
   })
 })
