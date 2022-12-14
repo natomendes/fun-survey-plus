@@ -1,9 +1,13 @@
-# SignUp SignIn BoilerPlater
-This repository is a boiler plate for an API REST  
-It has the structure to sign up and sign an user.
+# Fun Survey Plus
+Fun Survey plus is an survey generator API.
+Where you can create your own surveys, invite your family and friends to answer and have fun.
 
+It was developed with TypeScript + Node.JS + Jest + Docker as part of my learning proccess on becaming a better software developer.
 
-It was developed with TypeScript + Node.JS + Jest + Docker.
+If you think you can contribute on making this project better, or found something that's not working as expected you can contact me here or through the channels below.
+
+## [LinkedIn](https://www.linkedin.com/in/renatolmendes/)  [Gmail](mailto:mendeslrenato@gmail.com) 
+
 
 > ## APIs documentations
 1. [Sign Up](./requirements/signup.md)
