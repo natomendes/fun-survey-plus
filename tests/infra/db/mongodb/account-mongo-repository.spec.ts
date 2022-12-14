@@ -28,7 +28,7 @@ describe('Account Mongo Repository', () => {
     await accountCollection.deleteMany({})
   })
 
-  describe('Add method', () => {
+  describe('add()', () => {
     it('Should return an account on success', async () => {
       const sut = makeSut()
       const isValid = await sut.add(makeFakeAddAccount())
@@ -36,7 +36,7 @@ describe('Account Mongo Repository', () => {
     })
   })
 
-  describe('loadByEmail method', () => {
+  describe('loadByEmail()', () => {
     it('Should return an account on success', async () => {
       const sut = makeSut()
       const addAccount = makeFakeAddAccount()
@@ -56,7 +56,7 @@ describe('Account Mongo Repository', () => {
     })
   })
 
-  describe('updateAccessToken method', () => {
+  describe('updateAccessToken()', () => {
     it('Should update account accessToken on success', async () => {
       const sut = makeSut()
       const { insertedId } = await accountCollection.insertOne(makeFakeAddAccount())
