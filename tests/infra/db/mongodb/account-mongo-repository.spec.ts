@@ -88,14 +88,14 @@ describe('Account Mongo Repository', () => {
       expect(account.password).toBe(addAccount.password)
     })
 
-    it('Should return an account on loadByToken with role', async () => {
+    it('Should return an account on loadByToken with admin role', async () => {
       const sut = makeSut()
       const addAccount = {
         name: 'any_name',
         email: 'any_email@mail.com',
         password: 'any_password',
         accessToken: 'any_token',
-        role: 'any_role'
+        role: 'admin'
       }
       await accountCollection.insertOne(addAccount)
       const account = await sut.loadByToken(addAccount.accessToken, addAccount.role)
@@ -106,10 +106,41 @@ describe('Account Mongo Repository', () => {
       expect(account.password).toBe(addAccount.password)
     })
 
+    it('Should return null on loadByToken with invalid role', async () => {
+      const sut = makeSut()
+      const addAccount = {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        accessToken: 'any_token'
+      }
+      await accountCollection.insertOne(addAccount)
+      const account = await sut.loadByToken(addAccount.accessToken, 'admin')
+      expect(account).toBeFalsy()
+    })
+
     it('Should return null if mongo findOne fails', async () => {
       const sut = makeSut()
       const account = await sut.loadByToken('any_token')
       expect(account).toBeNull()
+    })
+
+    it('Should return an account on loadByToken if user is admin', async () => {
+      const sut = makeSut()
+      const addAccount = {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        accessToken: 'any_token',
+        role: 'admin'
+      }
+      await accountCollection.insertOne(addAccount)
+      const account = await sut.loadByToken(addAccount.accessToken)
+      expect(account).toBeTruthy()
+      expect(account.id).toBeTruthy()
+      expect(account.name).toBe(addAccount.name)
+      expect(account.email).toBe(addAccount.email)
+      expect(account.password).toBe(addAccount.password)
     })
   })
 })
