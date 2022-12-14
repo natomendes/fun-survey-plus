@@ -1,3 +1,4 @@
+[![Coverage Status](https://coveralls.io/repos/github/natomendes/fun-survey-plus/badge.svg?branch=main&t=arR1Y6)](https://coveralls.io/github/natomendes/fun-survey-plus?branch=main)
 # Fun Survey Plus
 Fun Survey plus is an survey generator API.
 Where you can create your own surveys, invite your family and friends to answer and have fun.
