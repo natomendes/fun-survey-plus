@@ -64,12 +64,12 @@ describe('DbLoadAccountByToken Usecase', () => {
   })
 
   it('Should call LoadAccountBytokenRepository with correct values', async () => {
-    const decryptedToken = faker.datatype.string()
-    const { sut, loadAccountByTokenRepositoryStub } = makeSut(decryptedToken)
+    const { sut, loadAccountByTokenRepositoryStub } = makeSut()
     const loadByTokenSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
     const role = faker.database.column()
-    await sut.load(faker.datatype.uuid(), role)
-    expect(loadByTokenSpy).toBeCalledWith(decryptedToken, role)
+    const token = faker.datatype.uuid()
+    await sut.load(token, role)
+    expect(loadByTokenSpy).toBeCalledWith(token, role)
   })
 
   it('Should return null if LoadAccountBytokenRepository returns null', async () => {

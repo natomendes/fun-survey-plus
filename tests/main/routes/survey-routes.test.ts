@@ -4,6 +4,7 @@ import { faker } from '@faker-js/faker'
 import app from '@/main/config/app'
 import { AddSurveyModel } from '@/domain/usecases'
 import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
+import { sign } from 'jsonwebtoken'
 
 const makeFakeAddSurveyData = (): AddSurveyModel => ({
   question: faker.random.words(),
@@ -16,6 +17,7 @@ const makeFakeAddSurveyData = (): AddSurveyModel => ({
 })
 
 let surveyCollection: Collection
+let accountCollection: Collection
 
 describe('Survey Routes', () => {
   beforeAll(async () => {
@@ -29,6 +31,8 @@ describe('Survey Routes', () => {
   beforeEach(async () => {
     surveyCollection = MongoHelper.getCollection('surveys')
     await surveyCollection.deleteMany({})
+    accountCollection = MongoHelper.getCollection('accounts')
+    await accountCollection.deleteMany({})
   })
 
   describe('POST /surveys', () => {
@@ -37,6 +41,29 @@ describe('Survey Routes', () => {
         .post('/api/surveys')
         .send(makeFakeAddSurveyData())
         .expect(403)
+    })
+
+    it('Should return 204 on add survey wit valid access token', async () => {
+      const res = await accountCollection.insertOne({
+        name: 'Rodrigo',
+        email: 'rodrigo.manguinho@gmail.com',
+        password: '123',
+        role: 'admin'
+      })
+      const id = res.insertedId.toHexString()
+      const accessToken = sign({ id }, process.env.JWT_SECRET)
+      await accountCollection.updateOne({
+        _id: res.insertedId
+      }, {
+        $set: {
+          accessToken
+        }
+      })
+      await request(app)
+        .post('/api/surveys')
+        .set('x-access-token', accessToken)
+        .send(makeFakeAddSurveyData())
+        .expect(204)
     })
   })
 })
