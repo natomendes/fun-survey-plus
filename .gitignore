@@ -5,4 +5,4 @@ data
 !src/data
 !tests/data
 .env
-testEnvVars.ts
+.coveralls.yml
