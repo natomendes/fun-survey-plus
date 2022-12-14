@@ -78,4 +78,11 @@ describe('DbLoadAccountByToken Usecase', () => {
     const account = await sut.load(faker.datatype.uuid())
     expect(account).toBeNull()
   })
+
+  it('Should return an account on success', async () => {
+    const accountMock = makeFakeAccount()
+    const { sut } = makeSut(faker.datatype.string(), accountMock)
+    const account = await sut.load(faker.datatype.uuid(), faker.database.column())
+    expect(account).toEqual(accountMock)
+  })
 })
