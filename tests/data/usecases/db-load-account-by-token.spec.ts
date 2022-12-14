@@ -71,4 +71,11 @@ describe('DbLoadAccountByToken Usecase', () => {
     await sut.load(faker.datatype.uuid(), role)
     expect(loadByTokenSpy).toBeCalledWith(decryptedToken, role)
   })
+
+  it('Should return null if LoadAccountBytokenRepository returns null', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = makeSut()
+    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockResolvedValueOnce(null)
+    const account = await sut.load(faker.datatype.uuid())
+    expect(account).toBeNull()
+  })
 })
