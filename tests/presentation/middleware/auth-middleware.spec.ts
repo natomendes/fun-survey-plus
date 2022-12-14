@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { AccessDeniedError } from '@/presentation/errors'
-import { forbidden } from '@/presentation/helpers/http-helper'
+import { forbidden, ok } from '@/presentation/helpers/http-helper'
 import { AuthMiddleware } from '@/presentation/middlewares/auth-middleware'
 import { LoadAccountByToken, AccountModel, HttpRequest } from '@/presentation/middlewares/middlewares-protocols'
 
@@ -60,5 +60,12 @@ describe('Auth Middleware', () => {
     jest.spyOn(loadAccountByTokenStub, 'load').mockReturnValueOnce(null)
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
+  })
+
+  it('Should return ok if LoadAccountByToken returns an account', async () => {
+    const account = makeFakeAccount()
+    const { sut } = makeSut(account)
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(ok({ accountId: account.id }))
   })
 })
