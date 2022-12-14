@@ -8,6 +8,7 @@ It was developed with TypeScript + Node.JS + Jest + Docker.
 > ## APIs documentations
 1. [Sign Up](./requirements/signup.md)
 2. [Sign In](./requirements/login.md)
+2. [Add Survey](./requirements/add-survey.md)
 
 ### Following good practices like:
  - Single Responsibility Principle (SRP)
