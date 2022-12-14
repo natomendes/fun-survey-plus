@@ -49,10 +49,10 @@ describe('Account Mongo Repository', () => {
       expect(account.password).toBe(addAccount.password)
     })
 
-    it('Should return falsy if mongo findOne fails', async () => {
+    it('Should return null if mongo findOne fails', async () => {
       const sut = makeSut()
       const account = await sut.loadByEmail('any_email@mail.com')
-      expect(account).toBeFalsy()
+      expect(account).toBeNull()
     })
   })
 
@@ -104,6 +104,12 @@ describe('Account Mongo Repository', () => {
       expect(account.name).toBe(addAccount.name)
       expect(account.email).toBe(addAccount.email)
       expect(account.password).toBe(addAccount.password)
+    })
+
+    it('Should return null if mongo findOne fails', async () => {
+      const sut = makeSut()
+      const account = await sut.loadByToken('any_token')
+      expect(account).toBeNull()
     })
   })
 })
