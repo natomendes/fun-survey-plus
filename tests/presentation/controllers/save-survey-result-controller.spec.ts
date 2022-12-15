@@ -69,4 +69,17 @@ describe('SaveSurveyResultController', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
   })
+
+  it('Should return forbidden if an invalid answer is provided', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle({
+      params: {
+        surveyId: faker.database.mongodbObjectId()
+      },
+      body: {
+        answer: faker.random.words()
+      }
+    })
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('answer')))
+  })
 })
