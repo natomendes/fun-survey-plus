@@ -1,7 +1,7 @@
 import { HttpRequest, SurveyModel } from '@/presentation/controllers/controllers-protocols'
 import { SaveSurveyResultController } from '@/presentation/controllers'
-import { forbidden } from '@/presentation/helpers/http-helper'
-import { InvalidParamError } from '@/presentation/errors'
+import { forbidden, serverError } from '@/presentation/helpers/http-helper'
+import { InvalidParamError, ServerError } from '@/presentation/errors'
 import { LoadSurveyById } from '@/domain/usecases'
 import { faker } from '@faker-js/faker'
 
@@ -60,5 +60,13 @@ describe('SaveSurveyResultController', () => {
     jest.spyOn(loadSurverByIdStub, 'load').mockResolvedValueOnce(null)
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
+  })
+
+  it('Should return server error if LoadSurveyById throws', async () => {
+    const { sut, loadSurverByIdStub } = makeSut()
+    jest.spyOn(loadSurverByIdStub, 'load')
+      .mockRejectedValueOnce(new Error())
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
   })
 })
