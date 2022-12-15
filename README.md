@@ -1,4 +1,4 @@
-[![release](https://github.com/natomendes/fun-survey-plus/actions/workflows/learn-github-actions.yml/badge.svg)](https://github.com/natomendes/fun-survey-plus/actions/workflows/learn-github-actions.yml)
+[![release](https://github.com/natomendes/fun-survey-plus/actions/workflows/release.yml/badge.svg)](https://github.com/natomendes/fun-survey-plus/actions/workflows/release.yml)
 [![Coverage Status](https://coveralls.io/repos/github/natomendes/fun-survey-plus/badge.svg?branch=main&t=arR1Y6)](https://coveralls.io/github/natomendes/fun-survey-plus?branch=main)
 # Fun Survey Plus
 Fun Survey plus is an survey generator API.
