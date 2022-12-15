@@ -1,4 +1,4 @@
-import { Controller, HttpRequest, HttpResponse, LoadSurveys } from '@/presentation/controllers/load-surveys/load-survey-protocols'
+import { Controller, HttpRequest, HttpResponse, LoadSurveys } from '@/presentation/controllers/controllers-protocols'
 
 export class LoadSurveysController implements Controller {
   constructor (private readonly loadSurveys: LoadSurveys) {}

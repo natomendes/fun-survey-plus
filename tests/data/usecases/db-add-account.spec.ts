@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
-import { AddAccountModel, Hasher, AddAccountRepository, AccountModel, LoadAccountByEmailRepository } from '@/data/usecases/usecases-protocols'
 import { DbAddAccount } from '@/data/usecases'
+import { AddAccountModel, Hasher, AddAccountRepository, AccountModel, LoadAccountByEmailRepository } from '@/data/usecases/usecases-protocols'
 
 const makeFakeAccount = (): AccountModel => ({
   id: faker.datatype.uuid(),

@@ -1,7 +1,7 @@
 import MockDate from 'mockdate'
 import { faker } from '@faker-js/faker'
-import { SurveyModel, LoadSurveys } from '@/presentation/controllers/load-surveys/load-survey-protocols'
-import { LoadSurveysController } from '@/presentation/controllers/load-surveys/load-surveys-controller'
+import { LoadSurveysController } from '@/presentation/controllers'
+import { SurveyModel, LoadSurveys } from '@/presentation/controllers/controllers-protocols'
 
 const makeFakeSurveysList = (): SurveyModel[] => [{
   id: faker.datatype.uuid(),

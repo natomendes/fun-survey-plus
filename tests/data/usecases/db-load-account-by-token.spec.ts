@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
-import { AccountModel, Decrypter, LoadAccountByTokenRepository } from '@/data/usecases/usecases-protocols'
 import { DbLoadAccountByToken } from '@/data/usecases'
+import { AccountModel, Decrypter, LoadAccountByTokenRepository } from '@/data/usecases/usecases-protocols'
 
 const makeFakeAccount = (): AccountModel => ({
   id: faker.datatype.uuid(),

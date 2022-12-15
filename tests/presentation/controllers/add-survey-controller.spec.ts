@@ -1,9 +1,9 @@
-import { faker } from '@faker-js/faker'
 import MockDate from 'mockdate'
-import { AddSurvey, AddSurveyModel, HttpRequest, Validation } from '@/presentation/controllers/add-survey/add-survey-protocols'
-import { AddSurveyController } from '@/presentation/controllers/add-survey/add-survey-controller'
+import { faker } from '@faker-js/faker'
+import { AddSurveyController } from '@/presentation/controllers'
 import { MissingParamError, ServerError } from '@/presentation/errors'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http-helper'
+import { AddSurvey, AddSurveyModel, HttpRequest, Validation } from '@/presentation/controllers/controllers-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
