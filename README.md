@@ -15,7 +15,8 @@ If you think you can contribute on making this project better, or found somethin
 1. [Sign Up](./requirements/signup.md)
 2. [Sign In](./requirements/login.md)
 3. [Add Survey](./requirements/add-survey.md)
-3. [Load Surveys](./requirements/load-surveys.md)
+4. [Load Surveys](./requirements/load-surveys.md)
+5. [Save Survey Result](./requirements/save-survey-result.md)
 
 ### Following good practices like:
  - Single Responsibility Principle (SRP)
