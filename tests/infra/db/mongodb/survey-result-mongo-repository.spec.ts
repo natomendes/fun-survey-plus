@@ -80,5 +80,21 @@ describe('Survey Result Mongo Repository', () => {
       expect(surveyResult.answer).toBe(saveSurveyResult.answer)
       expect(surveyResult.date).toEqual(saveSurveyResult.date)
     })
+
+    it('Should update survey result if its not new', async () => {
+      const accountId = await makeAccount()
+      const surveyId = await makeSurvey()
+      const { id, ...saveSurveyResult } = makeFakeSurveyResult(accountId, surveyId)
+      const { insertedId } = await surveyResultCollection.insertOne(saveSurveyResult)
+      const newAnswer = faker.datatype.string()
+      saveSurveyResult.answer = newAnswer
+      const sut = makeSut()
+      const surveyResult = await sut.saveResult(saveSurveyResult)
+      expect(surveyResult.id).toBe(insertedId.toHexString())
+      expect(surveyResult.accountId).toBe(accountId)
+      expect(surveyResult.surveyId).toBe(surveyId)
+      expect(surveyResult.answer).toBe(newAnswer)
+      expect(surveyResult.date).toEqual(saveSurveyResult.date)
+    })
   })
 })
