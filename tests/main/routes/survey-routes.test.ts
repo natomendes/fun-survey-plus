@@ -1,12 +1,11 @@
 import request from 'supertest'
+import { sign } from 'jsonwebtoken'
 import { Collection } from 'mongodb'
 import { faker } from '@faker-js/faker'
 import app from '@/main/config/app'
-import { AddSurveyModel } from '@/domain/usecases'
-import { MongoHelper } from '@/infra/db/mongodb/mongo-helper'
-import { sign } from 'jsonwebtoken'
+import { MongoHelper } from '@/infra'
 
-const makeFakeAddSurveyData = (): AddSurveyModel => ({
+const makeFakeAddSurveyData = (): any => ({
   question: faker.random.words(),
   answers: [{
     image: faker.internet.url(),
@@ -15,6 +14,25 @@ const makeFakeAddSurveyData = (): AddSurveyModel => ({
     answer: faker.datatype.string()
   }]
 })
+
+const makeAccessToken = async (role?: string): Promise<string> => {
+  const res = await accountCollection.insertOne({
+    name: 'Rodrigo',
+    email: 'rodrigo.manguinho@gmail.com',
+    password: '123',
+    role
+  })
+  const id = res.insertedId.toHexString()
+  const accessToken = sign({ id }, process.env.JWT_SECRET)
+  await accountCollection.updateOne({
+    _id: res.insertedId
+  }, {
+    $set: {
+      accessToken
+    }
+  })
+  return accessToken
+}
 
 let surveyCollection: Collection
 let accountCollection: Collection
@@ -43,26 +61,28 @@ describe('Survey Routes', () => {
         .expect(403)
     })
 
-    it('Should return 204 on add survey wit valid access token', async () => {
-      const res = await accountCollection.insertOne({
-        name: 'Rodrigo',
-        email: 'rodrigo.manguinho@gmail.com',
-        password: '123',
-        role: 'admin'
-      })
-      const id = res.insertedId.toHexString()
-      const accessToken = sign({ id }, process.env.JWT_SECRET)
-      await accountCollection.updateOne({
-        _id: res.insertedId
-      }, {
-        $set: {
-          accessToken
-        }
-      })
+    it('Should return 204 on add survey with valid access token', async () => {
+      const accessToken = await makeAccessToken('admin')
       await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
         .send(makeFakeAddSurveyData())
+        .expect(204)
+    })
+  })
+
+  describe('GET /surveys', () => {
+    it('Should return 403 on load surveys without access token', async () => {
+      await request(app)
+        .get('/api/surveys')
+        .expect(403)
+    })
+
+    it('Should return 204 on load all surveys with valid access token', async () => {
+      const accessToken = await makeAccessToken()
+      await request(app)
+        .get('/api/surveys')
+        .set('x-access-token', accessToken)
         .expect(204)
     })
   })

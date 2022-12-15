@@ -1,8 +1,9 @@
+import MockDate from 'mockdate'
 import { faker } from '@faker-js/faker'
-import { AddSurvey, AddSurveyModel, HttpRequest, Validation } from '@/presentation/controllers/add-survey/add-survey-protocols'
-import { AddSurveyController } from '@/presentation/controllers/add-survey/add-survey-controller'
+import { AddSurveyController } from '@/presentation/controllers'
 import { MissingParamError, ServerError } from '@/presentation/errors'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http-helper'
+import { AddSurvey, AddSurveyModel, HttpRequest, Validation } from '@/presentation/controllers/controllers-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -10,7 +11,8 @@ const makeFakeRequest = (): HttpRequest => ({
     answers: [{
       image: faker.datatype.string(),
       answer: faker.random.word()
-    }]
+    }],
+    date: new Date()
   }
 })
 
@@ -49,6 +51,14 @@ const makeSut = (): SutTypes => {
 }
 
 describe('AddSurvey Controller', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
   it('Should call Validation with correct values', async () => {
     const { sut, validationStub } = makeSut()
     const validateSpy = jest.spyOn(validationStub, 'validate')

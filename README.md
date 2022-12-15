@@ -1,3 +1,4 @@
+[![release](https://github.com/natomendes/fun-survey-plus/actions/workflows/learn-github-actions.yml/badge.svg)](https://github.com/natomendes/fun-survey-plus/actions/workflows/learn-github-actions.yml)
 [![Coverage Status](https://coveralls.io/repos/github/natomendes/fun-survey-plus/badge.svg?branch=main&t=arR1Y6)](https://coveralls.io/github/natomendes/fun-survey-plus?branch=main)
 # Fun Survey Plus
 Fun Survey plus is an survey generator API.
@@ -13,7 +14,8 @@ If you think you can contribute on making this project better, or found somethin
 > ## APIs documentations
 1. [Sign Up](./requirements/signup.md)
 2. [Sign In](./requirements/login.md)
-2. [Add Survey](./requirements/add-survey.md)
+3. [Add Survey](./requirements/add-survey.md)
+3. [Load Surveys](./requirements/load-surveys.md)
 
 ### Following good practices like:
  - Single Responsibility Principle (SRP)

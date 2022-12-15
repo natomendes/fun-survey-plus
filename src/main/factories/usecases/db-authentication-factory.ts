@@ -1,8 +1,6 @@
 import env from '@/main/config/env'
-import { JwtAdapter } from '@/infra/criptography/jwt-adapter'
-import { BcryptAdapter } from '@/infra/criptography/bcrypt-adapter'
-import { AccountMongoRepository } from '@/infra/db/mongodb/account-mongo-repository'
 import { DbAuthentication } from '@/data/usecases'
+import { JwtAdapter, BcryptAdapter, AccountMongoRepository } from '@/infra'
 
 export const makeDbAuthentication = (): DbAuthentication => {
   const salt = 12

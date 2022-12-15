@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { AccessDeniedError } from '@/presentation/errors'
+import { AuthMiddleware } from '@/presentation/middlewares'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http-helper'
-import { AuthMiddleware } from '@/presentation/middlewares/auth-middleware'
 import { LoadAccountByToken, AccountModel, HttpRequest } from '@/presentation/middlewares/middlewares-protocols'
 
 const makeFakeAccount = (): AccountModel => ({

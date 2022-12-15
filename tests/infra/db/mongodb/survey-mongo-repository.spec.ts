@@ -10,7 +10,8 @@ const makeFakeAddSurveyData = (): AddSurveyModel => ({
     answer: faker.datatype.string()
   }, {
     answer: faker.datatype.string()
-  }]
+  }],
+  date: new Date()
 })
 
 const makeSut = (): SurveyMongoRepository => {
@@ -32,13 +33,33 @@ describe('Survey Mongo Repository', () => {
     await surveyCollection.deleteMany({})
   })
 
-  describe('Add method', () => {
+  describe('add()', () => {
     it('Should add a survey on success', async () => {
       const sut = makeSut()
       const addSurveyData = makeFakeAddSurveyData()
       await sut.add(addSurveyData)
       const survey = await surveyCollection.findOne({ question: addSurveyData.question })
       expect(survey).toBeTruthy()
+    })
+  })
+
+  describe('loadAll()', () => {
+    it('Should load all surveys on success', async () => {
+      const addSurveyData = makeFakeAddSurveyData()
+      const addSurveyData2 = makeFakeAddSurveyData()
+      await surveyCollection.insertMany([addSurveyData, addSurveyData2])
+
+      const sut = makeSut()
+      const surveys = await sut.loadAll()
+      expect(surveys.length).toBe(2)
+      expect(surveys[0].question).toBe(addSurveyData.question)
+      expect(surveys[1].question).toBe(addSurveyData2.question)
+    })
+
+    it('Should load empty list', async () => {
+      const sut = makeSut()
+      const surveys = await sut.loadAll()
+      expect(surveys.length).toBe(0)
     })
   })
 })
