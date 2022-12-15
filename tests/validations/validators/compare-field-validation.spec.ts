@@ -1,7 +1,7 @@
 import { InvalidParamError } from '@/presentation/errors'
 import { CompareFieldsValidation } from '@/validations/validators'
 import { faker } from '@faker-js/faker'
-interface SutTypes {
+type SutTypes = {
   sut: CompareFieldsValidation
 }
 

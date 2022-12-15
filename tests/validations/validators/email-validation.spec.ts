@@ -18,7 +18,7 @@ const makeFakeBody = (): any => ({
   passwordConfirmation: 'any_password'
 })
 
-interface SutTypes {
+type SutTypes = {
   sut: EmailValidation
   emailValidatorStub: EmailValidator
 }
