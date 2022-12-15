@@ -41,4 +41,12 @@ describe('DbSaveSurveyResult', () => {
     await sut.save(saveSurveyResult)
     expect(saveResultSpy).toHaveBeenCalledWith(saveSurveyResult)
   })
+
+  it('Should return a survey result on success', async () => {
+    const surveyResultMock = makeFakeSurveyResult()
+    const { id, ...saveSurveyResult } = surveyResultMock
+    const { sut } = makeSut(surveyResultMock)
+    const surveyResult = await sut.save(saveSurveyResult)
+    expect(surveyResult).toEqual(surveyResultMock)
+  })
 })
