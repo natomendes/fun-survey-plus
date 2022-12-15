@@ -17,4 +17,4 @@
 4. ❌ Returns error **403** if answer sent by the client is invalid.
 5. ❌ Returns error **500** if something goes wrong while creating the survey result.
 6. ❌ Returns error **500** if something goes wrong while trying to update the survey result.
-7. ❌ Returns error **500** if something goes wrong while loading the survey result.
+7. ✅ Returns error **500** if something goes wrong while loading the survey result.
