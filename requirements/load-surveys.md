@@ -4,7 +4,7 @@
 
 1. ❌ Receive a **GET** request on route **/api/surveys**.
 2. ❌ Validate if was made by an **user**.
-3. ❌ Returns **204** if no survey is found.
+3. ✅ Returns **204** if no survey is found.
 4. ✅ Returns **200** with surveys list.
 
 > ## Exceptions
