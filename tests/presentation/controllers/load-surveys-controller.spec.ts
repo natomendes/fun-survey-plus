@@ -2,6 +2,7 @@ import MockDate from 'mockdate'
 import { faker } from '@faker-js/faker'
 import { LoadSurveysController } from '@/presentation/controllers'
 import { SurveyModel, LoadSurveys } from '@/presentation/controllers/controllers-protocols'
+import { ok } from '@/presentation/helpers/http-helper'
 
 const makeFakeSurveysList = (): SurveyModel[] => [{
   id: faker.datatype.uuid(),
@@ -58,5 +59,12 @@ describe('LoadSurveys Controller', () => {
     const loadSpy = jest.spyOn(loadSurveysStub, 'load')
     await sut.handle({})
     expect(loadSpy).toHaveBeenCalled()
+  })
+
+  it('Should return ok on success', async () => {
+    const surveyList = makeFakeSurveysList()
+    const { sut } = makeSut(surveyList)
+    const httpResponse = await sut.handle({})
+    expect(httpResponse).toEqual(ok(surveyList))
   })
 })
