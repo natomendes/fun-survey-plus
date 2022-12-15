@@ -22,4 +22,4 @@ jobs:
       - name: Eslint check
         run: npx eslint 'src/**'
       - name: Test coverage
-        run: npm run test:coveralls
+        run: npm run test:ci
