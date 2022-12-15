@@ -29,7 +29,7 @@ const makeLoadSurveysRepositoryStub = (surveysList: SurveyModel[]): LoadSurveysR
   return new LoadSurveysRepositoryStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   sut: DbLoadSurveys
   loadSurveysRepositoryStub: LoadSurveysRepository
 }
