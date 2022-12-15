@@ -14,7 +14,8 @@ If you think you can contribute on making this project better, or found somethin
 > ## APIs documentations
 1. [Sign Up](./requirements/signup.md)
 2. [Sign In](./requirements/login.md)
-2. [Add Survey](./requirements/add-survey.md)
+3. [Add Survey](./requirements/add-survey.md)
+3. [Load Surveys](./requirements/load-surveys.md)
 
 ### Following good practices like:
  - Single Responsibility Principle (SRP)
