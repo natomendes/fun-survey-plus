@@ -23,3 +23,7 @@ jobs:
         run: npx eslint 'src/**'
       - name: Test coverage
         run: npm run test:ci
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
