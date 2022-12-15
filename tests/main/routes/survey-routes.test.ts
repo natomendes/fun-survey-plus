@@ -15,6 +15,25 @@ const makeFakeAddSurveyData = (): any => ({
   }]
 })
 
+const makeAccessToken = async (role?: string): Promise<string> => {
+  const res = await accountCollection.insertOne({
+    name: 'Rodrigo',
+    email: 'rodrigo.manguinho@gmail.com',
+    password: '123',
+    role
+  })
+  const id = res.insertedId.toHexString()
+  const accessToken = sign({ id }, process.env.JWT_SECRET)
+  await accountCollection.updateOne({
+    _id: res.insertedId
+  }, {
+    $set: {
+      accessToken
+    }
+  })
+  return accessToken
+}
+
 let surveyCollection: Collection
 let accountCollection: Collection
 
@@ -43,21 +62,7 @@ describe('Survey Routes', () => {
     })
 
     it('Should return 204 on add survey with valid access token', async () => {
-      const res = await accountCollection.insertOne({
-        name: 'Rodrigo',
-        email: 'rodrigo.manguinho@gmail.com',
-        password: '123',
-        role: 'admin'
-      })
-      const id = res.insertedId.toHexString()
-      const accessToken = sign({ id }, process.env.JWT_SECRET)
-      await accountCollection.updateOne({
-        _id: res.insertedId
-      }, {
-        $set: {
-          accessToken
-        }
-      })
+      const accessToken = await makeAccessToken('admin')
       await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
@@ -74,20 +79,7 @@ describe('Survey Routes', () => {
     })
 
     it('Should return 204 on load all surveys with valid access token', async () => {
-      const res = await accountCollection.insertOne({
-        name: 'Rodrigo',
-        email: 'rodrigo.manguinho@gmail.com',
-        password: '123'
-      })
-      const id = res.insertedId.toHexString()
-      const accessToken = sign({ id }, process.env.JWT_SECRET)
-      await accountCollection.updateOne({
-        _id: res.insertedId
-      }, {
-        $set: {
-          accessToken
-        }
-      })
+      const accessToken = await makeAccessToken()
       await request(app)
         .get('/api/surveys')
         .set('x-access-token', accessToken)
