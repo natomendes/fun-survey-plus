@@ -1,25 +1,40 @@
-import { HttpRequest, SurveyModel } from '@/presentation/controllers/controllers-protocols'
+import { HttpRequest, SurveyModel, SurveyResultModel, LoadSurveyById, SaveSurveyResult, SaveSurveyResultModel } from '@/presentation/controllers/controllers-protocols'
 import { SaveSurveyResultController } from '@/presentation/controllers'
 import { forbidden, serverError } from '@/presentation/helpers/http-helper'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
-import { LoadSurveyById } from '@/domain/usecases'
 import { faker } from '@faker-js/faker'
+import MockDate from 'mockdate'
 
-const makeFakeSurvey = (): SurveyModel => ({
-  id: faker.database.mongodbObjectId(),
+const makeFakeSurvey = (answer: string, id: string): SurveyModel => ({
+  id,
   question: faker.random.words(),
   answers: [{
     image: faker.internet.url(),
-    answer: faker.random.word()
+    answer
   }],
   date: new Date()
 })
 
-const makeFakeRequest = (): HttpRequest => ({
+const makeFakeSurveyResult = (
+  accountId = faker.database.mongodbObjectId(),
+  surveyId = faker.database.mongodbObjectId(),
+  answer = faker.random.word()
+): SurveyResultModel => ({
+  id: faker.database.mongodbObjectId(),
+  accountId,
+  surveyId,
+  answer,
+  date: new Date()
+})
+
+const makeFakeRequest = (answer = faker.random.word()): HttpRequest => ({
   params: {
     surveyId: faker.database.mongodbObjectId()
   },
-  body: {}
+  body: {
+    answer
+  },
+  accountId: faker.database.mongodbObjectId()
 })
 
 const makeLoadSurverById = (survey: SurveyModel): LoadSurveyById => {
@@ -32,21 +47,44 @@ const makeLoadSurverById = (survey: SurveyModel): LoadSurveyById => {
   return new LoadSurveyByIdStub()
 }
 
+const makeSaveSurveyResult = (surveyResult: SurveyResultModel): SaveSurveyResult => {
+  class SaveSurveyResultStub implements SaveSurveyResult {
+    async save (_surveyData: SaveSurveyResultModel): Promise<SurveyResultModel> {
+      return surveyResult
+    }
+  }
+
+  return new SaveSurveyResultStub()
+}
+
 type SutTypes = {
   sut: SaveSurveyResultController
   loadSurverByIdStub: LoadSurveyById
+  saveSurveyResultStub: SaveSurveyResult
 }
 
-const makeSut = (survey = makeFakeSurvey()): SutTypes => {
+const makeSut = (
+  survey = makeFakeSurvey(faker.random.word(), faker.database.mongodbObjectId()),
+  surveyResult = makeFakeSurveyResult()
+): SutTypes => {
   const loadSurverByIdStub = makeLoadSurverById(survey)
-  const sut = new SaveSurveyResultController(loadSurverByIdStub)
+  const saveSurveyResultStub = makeSaveSurveyResult(surveyResult)
+  const sut = new SaveSurveyResultController(loadSurverByIdStub, saveSurveyResultStub)
   return {
     sut,
-    loadSurverByIdStub
+    loadSurverByIdStub,
+    saveSurveyResultStub
   }
 }
 
 describe('SaveSurveyResultController', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
   it('Should call LoadSurveyById with correct value', async () => {
     const { sut, loadSurverByIdStub } = makeSut()
     const loadSpy = jest.spyOn(loadSurverByIdStub, 'load')
@@ -81,5 +119,23 @@ describe('SaveSurveyResultController', () => {
       }
     })
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('answer')))
+  })
+
+  it('Should call SaveSurveyResult with correct values', async () => {
+    const answer = faker.random.word()
+    const httpRequest = makeFakeRequest(answer)
+    const surveyMock = makeFakeSurvey(answer, httpRequest.params.surveyId)
+    const surveyResultMock = makeFakeSurveyResult(httpRequest.accountId, httpRequest.params.surveyId, answer)
+
+    const { sut, saveSurveyResultStub } = makeSut(surveyMock, surveyResultMock)
+    const saveSpy = jest.spyOn(saveSurveyResultStub, 'save')
+    await sut.handle(httpRequest)
+
+    expect(saveSpy).toHaveBeenCalledWith({
+      surveyId: httpRequest.params.surveyId,
+      accountId: httpRequest.accountId,
+      answer,
+      date: new Date()
+    })
   })
 })
