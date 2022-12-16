@@ -5,8 +5,12 @@ import { InvalidParamError, ServerError } from '@/presentation/errors'
 import { faker } from '@faker-js/faker'
 import MockDate from 'mockdate'
 
-const makeFakeSurvey = (answer: string, id: string): SurveyModel => ({
-  id,
+const answer = faker.random.word()
+const accountId = faker.database.mongodbObjectId()
+const surveyId = faker.database.mongodbObjectId()
+
+const makeFakeSurvey = (): SurveyModel => ({
+  id: surveyId,
   question: faker.random.words(),
   answers: [{
     image: faker.internet.url(),
@@ -15,11 +19,7 @@ const makeFakeSurvey = (answer: string, id: string): SurveyModel => ({
   date: new Date()
 })
 
-const makeFakeSurveyResult = (
-  accountId = faker.database.mongodbObjectId(),
-  surveyId = faker.database.mongodbObjectId(),
-  answer = faker.random.word()
-): SurveyResultModel => ({
+const makeFakeSurveyResult = (): SurveyResultModel => ({
   id: faker.database.mongodbObjectId(),
   accountId,
   surveyId,
@@ -27,30 +27,30 @@ const makeFakeSurveyResult = (
   date: new Date()
 })
 
-const makeFakeRequest = (answer = faker.random.word()): HttpRequest => ({
+const makeFakeRequest = (): HttpRequest => ({
   params: {
-    surveyId: faker.database.mongodbObjectId()
+    surveyId
   },
   body: {
     answer
   },
-  accountId: faker.database.mongodbObjectId()
+  accountId
 })
 
-const makeLoadSurverById = (survey: SurveyModel): LoadSurveyById => {
+const makeLoadSurverById = (): LoadSurveyById => {
   class LoadSurveyByIdStub implements LoadSurveyById {
     async load (_surveyId: String): Promise<SurveyModel> {
-      return survey
+      return makeFakeSurvey()
     }
   }
 
   return new LoadSurveyByIdStub()
 }
 
-const makeSaveSurveyResult = (surveyResult: SurveyResultModel): SaveSurveyResult => {
+const makeSaveSurveyResult = (): SaveSurveyResult => {
   class SaveSurveyResultStub implements SaveSurveyResult {
     async save (_surveyData: SaveSurveyResultModel): Promise<SurveyResultModel> {
-      return surveyResult
+      return makeFakeSurveyResult()
     }
   }
 
@@ -64,11 +64,9 @@ type SutTypes = {
 }
 
 const makeSut = (
-  survey = makeFakeSurvey(faker.random.word(), faker.database.mongodbObjectId()),
-  surveyResult = makeFakeSurveyResult()
 ): SutTypes => {
-  const loadSurverByIdStub = makeLoadSurverById(survey)
-  const saveSurveyResultStub = makeSaveSurveyResult(surveyResult)
+  const loadSurverByIdStub = makeLoadSurverById()
+  const saveSurveyResultStub = makeSaveSurveyResult()
   const sut = new SaveSurveyResultController(loadSurverByIdStub, saveSurveyResultStub)
   return {
     sut,
@@ -90,7 +88,7 @@ describe('SaveSurveyResultController', () => {
     const loadSpy = jest.spyOn(loadSurverByIdStub, 'load')
     const httpRequest = makeFakeRequest()
     await sut.handle(httpRequest)
-    expect(loadSpy).toHaveBeenCalledWith(httpRequest.params.surveyId)
+    expect(loadSpy).toHaveBeenCalledWith(surveyId)
   })
 
   it('Should return forbidden if LoadSurveyById returns null', async () => {
@@ -112,7 +110,7 @@ describe('SaveSurveyResultController', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle({
       params: {
-        surveyId: faker.database.mongodbObjectId()
+        surveyId
       },
       body: {
         answer: faker.random.words()
@@ -122,18 +120,13 @@ describe('SaveSurveyResultController', () => {
   })
 
   it('Should call SaveSurveyResult with correct values', async () => {
-    const answer = faker.random.word()
-    const httpRequest = makeFakeRequest(answer)
-    const surveyMock = makeFakeSurvey(answer, httpRequest.params.surveyId)
-    const surveyResultMock = makeFakeSurveyResult(httpRequest.accountId, httpRequest.params.surveyId, answer)
-
-    const { sut, saveSurveyResultStub } = makeSut(surveyMock, surveyResultMock)
+    const { sut, saveSurveyResultStub } = makeSut()
     const saveSpy = jest.spyOn(saveSurveyResultStub, 'save')
-    await sut.handle(httpRequest)
+    await sut.handle(makeFakeRequest())
 
     expect(saveSpy).toHaveBeenCalledWith({
-      surveyId: httpRequest.params.surveyId,
-      accountId: httpRequest.accountId,
+      surveyId,
+      accountId,
       answer,
       date: new Date()
     })
