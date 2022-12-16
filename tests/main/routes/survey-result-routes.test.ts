@@ -4,11 +4,11 @@ import { faker } from '@faker-js/faker'
 import { Collection } from 'mongodb'
 import { sign } from 'jsonwebtoken'
 import request from 'supertest'
-import { AddSurveyModel } from '@/domain/usecases'
+import { AddSurveyParams } from '@/domain/usecases'
 
 const answer = faker.datatype.string()
 
-const makeFakeAddSurveyData = (): AddSurveyModel => ({
+const makeFakeAddSurveyData = (): AddSurveyParams => ({
   question: faker.random.words(),
   answers: [{
     image: faker.internet.url(),

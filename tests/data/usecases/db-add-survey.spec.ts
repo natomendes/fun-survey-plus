@@ -1,16 +1,16 @@
 import { faker } from '@faker-js/faker'
 import MockDate from 'mockdate'
 import { DbAddSurvey } from '@/data/usecases'
-import { AddSurveyModel, AddSurveyRepository } from '@/data/usecases/usecases-protocols'
+import { AddSurveyParams, AddSurveyRepository } from '@/data/usecases/usecases-protocols'
 
 const makeAddSurveyRepositoryStub = (): AddSurveyRepository => {
   class AddSurveyRepositoryStub implements AddSurveyRepository {
-    async add (_surveyData: AddSurveyModel): Promise<void> {}
+    async add (_surveyData: AddSurveyParams): Promise<void> {}
   }
   return new AddSurveyRepositoryStub()
 }
 
-const makeFakeAddSurveyData = (): AddSurveyModel => ({
+const makeFakeAddSurveyData = (): AddSurveyParams => ({
   question: faker.random.words(),
   answers: [{
     image: faker.datatype.string(),

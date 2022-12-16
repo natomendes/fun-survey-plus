@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { DbAddAccount } from '@/data/usecases'
-import { AddAccountModel, Hasher, AddAccountRepository, AccountModel, LoadAccountByEmailRepository } from '@/data/usecases/usecases-protocols'
+import { AddAccountParams, Hasher, AddAccountRepository, AccountModel, LoadAccountByEmailRepository } from '@/data/usecases/usecases-protocols'
 
 const makeFakeAccount = (): AccountModel => ({
   id: faker.datatype.uuid(),
@@ -20,7 +20,7 @@ const makeHasherStub = (hashedPassword: string): Hasher => {
 
 const makeAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
-    async add (_account: AddAccountModel): Promise<boolean> {
+    async add (_account: AddAccountParams): Promise<boolean> {
       return await new Promise(resolve => resolve(true))
     }
   }
@@ -43,7 +43,7 @@ type SutTypes = {
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
 }
 
-const makeFakeAccountData = (): AddAccountModel => ({
+const makeFakeAccountData = (): AddAccountParams => ({
   name: faker.name.fullName(),
   email: faker.internet.email(),
   password: faker.internet.password()

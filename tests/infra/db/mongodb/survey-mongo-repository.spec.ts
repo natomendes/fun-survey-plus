@@ -1,9 +1,9 @@
 import { Collection } from 'mongodb'
 import { faker } from '@faker-js/faker'
-import { AddSurveyModel } from '@/domain/usecases'
+import { AddSurveyParams } from '@/domain/usecases'
 import { SurveyMongoRepository, MongoHelper } from '@/infra/db/mongodb'
 
-const makeFakeAddSurveyData = (): AddSurveyModel => ({
+const makeFakeAddSurveyData = (): AddSurveyParams => ({
   question: faker.random.words(),
   answers: [{
     image: faker.datatype.string(),

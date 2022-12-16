@@ -1,4 +1,4 @@
-import { SaveSurveyResultModel, SaveSurveyResultRepository, SurveyResultModel } from '@/data/usecases/usecases-protocols'
+import { SaveSurveyResultParams, SaveSurveyResultRepository, SurveyResultModel } from '@/data/usecases/usecases-protocols'
 import { DbSaveSurveyResult } from '@/data/usecases'
 import { faker } from '@faker-js/faker'
 
@@ -12,7 +12,7 @@ const makeFakeSurveyResult = (): SurveyResultModel => ({
 
 const makeSaveSurveyResultRepository = (surveyResult: SurveyResultModel): SaveSurveyResultRepository => {
   class LoadSurveyByIdRepositoryStub implements SaveSurveyResultRepository {
-    async saveResult (_saveSurveyData: SaveSurveyResultModel): Promise<SurveyResultModel> {
+    async saveResult (_saveSurveyData: SaveSurveyResultParams): Promise<SurveyResultModel> {
       return surveyResult
     }
   }

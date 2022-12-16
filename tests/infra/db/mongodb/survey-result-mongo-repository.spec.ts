@@ -1,10 +1,10 @@
 import { Collection } from 'mongodb'
 import { faker } from '@faker-js/faker'
-import { AddAccountModel, AddSurveyModel } from '@/domain/usecases'
+import { AddAccountParams, AddSurveyParams } from '@/domain/usecases'
 import { SurveyResultMongoRepository, MongoHelper } from '@/infra/db/mongodb'
 import { SurveyResultModel } from '@/domain/models'
 
-const makeFakeAddSurveyData = (): AddSurveyModel => ({
+const makeFakeAddSurveyData = (): AddSurveyParams => ({
   question: faker.random.words(),
   answers: [{
     image: faker.datatype.string(),
@@ -15,7 +15,7 @@ const makeFakeAddSurveyData = (): AddSurveyModel => ({
   date: new Date()
 })
 
-const makeFakeAddAccount = (): AddAccountModel => ({
+const makeFakeAddAccount = (): AddAccountParams => ({
   name: faker.name.fullName(),
   email: faker.internet.email(),
   password: faker.internet.password()

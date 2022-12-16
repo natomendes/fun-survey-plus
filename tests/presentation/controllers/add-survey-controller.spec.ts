@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 import { AddSurveyController } from '@/presentation/controllers'
 import { MissingParamError, ServerError } from '@/presentation/errors'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http-helper'
-import { AddSurvey, AddSurveyModel, HttpRequest, Validation } from '@/presentation/controllers/controllers-protocols'
+import { AddSurvey, AddSurveyParams, HttpRequest, Validation } from '@/presentation/controllers/controllers-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -27,7 +27,7 @@ const makeValidationStub = (): Validation => {
 
 const makeAddSurveyStub = (): AddSurvey => {
   class AddSurveyStub implements AddSurvey {
-    async add (surveyData: AddSurveyModel): Promise<void> {}
+    async add (surveyData: AddSurveyParams): Promise<void> {}
   }
 
   return new AddSurveyStub()

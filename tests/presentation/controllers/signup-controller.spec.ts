@@ -1,11 +1,11 @@
 import { SignUpController } from '@/presentation/controllers'
 import { EmailInUseError, MissingParamError, ServerError } from '@/presentation/errors'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http-helper'
-import { AddAccount, AddAccountModel, Authentication, AuthenticationModel, HttpRequest, Validation } from '@/presentation/controllers/controllers-protocols'
+import { AddAccount, AddAccountParams, Authentication, AuthenticationParams, HttpRequest, Validation } from '@/presentation/controllers/controllers-protocols'
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add (account: AddAccountModel): Promise<boolean> {
+    async add (account: AddAccountParams): Promise<boolean> {
       return await new Promise(resolve => resolve(true))
     }
   }
@@ -23,7 +23,7 @@ const makeValidation = (): Validation => {
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationModel): Promise<string> {
+    async auth (authentication: AuthenticationParams): Promise<string> {
       return 'valid_token'
     }
   }
