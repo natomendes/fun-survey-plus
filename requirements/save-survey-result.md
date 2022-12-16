@@ -7,7 +7,7 @@
 3. ✅ Validate **survey_id** field.
 4. ✅ Validate **answer**.
 5. ✅ **Create/Update** the survey result.
-6. ❌ Returns **200** and the survey result.
+6. ✅ Returns **200** and the survey result.
 
 > ## Exceptions
 
