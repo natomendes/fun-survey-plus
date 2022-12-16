@@ -1,46 +1,17 @@
 import { Collection } from 'mongodb'
 import { faker } from '@faker-js/faker'
-import { AddAccountModel, AddSurveyModel } from '@/domain/usecases'
 import { SurveyResultMongoRepository, MongoHelper } from '@/infra/db/mongodb'
-import { SurveyResultModel } from '@/domain/models'
+import { mockAddAccountParams, mockAddSurveyParams, mockSurveyResult } from '@/tests/mocks'
 
-const makeFakeAddSurveyData = (): AddSurveyModel => ({
-  question: faker.random.words(),
-  answers: [{
-    image: faker.datatype.string(),
-    answer: faker.datatype.string()
-  }, {
-    answer: faker.datatype.string()
-  }],
-  date: new Date()
-})
-
-const makeFakeAddAccount = (): AddAccountModel => ({
-  name: faker.name.fullName(),
-  email: faker.internet.email(),
-  password: faker.internet.password()
-})
-
-const makeSurvey = async (addSurveyData = makeFakeAddSurveyData()): Promise<string> => {
+const makeSurvey = async (addSurveyData = mockAddSurveyParams()): Promise<string> => {
   const { insertedId } = await surveyCollection.insertOne(addSurveyData)
   return insertedId.toHexString()
 }
 
-const makeAccount = async (addAccountData = makeFakeAddAccount()): Promise<string> => {
+const makeAccount = async (addAccountData = mockAddAccountParams()): Promise<string> => {
   const { insertedId } = await accountCollection.insertOne(addAccountData)
   return insertedId.toHexString()
 }
-
-const makeFakeSurveyResult = (
-  accountId = faker.database.mongodbObjectId(),
-  surveyId = faker.database.mongodbObjectId()
-): SurveyResultModel => ({
-  id: faker.database.mongodbObjectId(),
-  accountId,
-  surveyId,
-  answer: faker.random.word(),
-  date: new Date()
-})
 
 const makeSut = (): SurveyResultMongoRepository => {
   return new SurveyResultMongoRepository()
@@ -49,6 +20,7 @@ const makeSut = (): SurveyResultMongoRepository => {
 let surveyCollection: Collection
 let surveyResultCollection: Collection
 let accountCollection: Collection
+
 describe('Survey Result Mongo Repository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
@@ -72,7 +44,7 @@ describe('Survey Result Mongo Repository', () => {
       const accountId = await makeAccount()
       const surveyId = await makeSurvey()
       const sut = makeSut()
-      const { id, ...saveSurveyResult } = makeFakeSurveyResult(accountId, surveyId)
+      const { id, ...saveSurveyResult } = mockSurveyResult(accountId, surveyId)
       const surveyResult = await sut.saveResult(saveSurveyResult)
       expect(surveyResult.id).toBeTruthy()
       expect(surveyResult.accountId).toBe(accountId)
@@ -84,7 +56,7 @@ describe('Survey Result Mongo Repository', () => {
     it('Should update survey result if its not new', async () => {
       const accountId = await makeAccount()
       const surveyId = await makeSurvey()
-      const { id, ...saveSurveyResult } = makeFakeSurveyResult(accountId, surveyId)
+      const { id, ...saveSurveyResult } = mockSurveyResult(accountId, surveyId)
       const { insertedId } = await surveyResultCollection.insertOne(saveSurveyResult)
       const newAnswer = faker.datatype.string()
       saveSurveyResult.answer = newAnswer

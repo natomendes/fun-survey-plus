@@ -1,31 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { DbLoadAccountByToken } from '@/data/usecases'
-import { AccountModel, Decrypter, LoadAccountByTokenRepository } from '@/data/usecases/usecases-protocols'
-
-const makeFakeAccount = (): AccountModel => ({
-  id: faker.datatype.uuid(),
-  name: faker.name.fullName(),
-  email: faker.internet.email(),
-  password: faker.internet.password()
-})
-
-const makeDecrypterStub = (decryptedToken: string): Decrypter => {
-  class DecrypterStub implements Decrypter {
-    async decrypt (_token: string): Promise<string> {
-      return decryptedToken
-    }
-  }
-  return new DecrypterStub()
-}
-
-const makeLoadAccountByTokenRepositoryStub = (account: AccountModel): LoadAccountByTokenRepository => {
-  class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
-    async loadByToken (token: string, role?: string): Promise<AccountModel> {
-      return account
-    }
-  }
-  return new LoadAccountByTokenRepositoryStub()
-}
+import { Decrypter, LoadAccountByTokenRepository } from '@/data/usecases/usecases-protocols'
+import { mockAccount, mockDecrypter, mockLoadAccountByTokenRepository } from '@/tests/mocks'
 
 type SutTypes = {
   sut: DbLoadAccountByToken
@@ -35,10 +11,10 @@ type SutTypes = {
 
 const makeSut = (
   decryptedToken = faker.datatype.string(),
-  account = makeFakeAccount()
+  account = mockAccount()
 ): SutTypes => {
-  const loadAccountByTokenRepositoryStub = makeLoadAccountByTokenRepositoryStub(account)
-  const decrypterStub = makeDecrypterStub(decryptedToken)
+  const loadAccountByTokenRepositoryStub = mockLoadAccountByTokenRepository(account)
+  const decrypterStub = mockDecrypter(decryptedToken)
   const sut = new DbLoadAccountByToken(decrypterStub, loadAccountByTokenRepositoryStub)
   return {
     sut,
@@ -80,7 +56,7 @@ describe('DbLoadAccountByToken Usecase', () => {
   })
 
   it('Should return an account on success', async () => {
-    const accountMock = makeFakeAccount()
+    const accountMock = mockAccount()
     const { sut } = makeSut(faker.datatype.string(), accountMock)
     const account = await sut.load(faker.datatype.uuid(), faker.database.column())
     expect(account).toEqual(accountMock)

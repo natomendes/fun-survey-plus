@@ -1,47 +1,10 @@
 import { MongoHelper } from '@/infra'
 import app from '@/main/config/app'
-import { faker } from '@faker-js/faker'
 import { Collection } from 'mongodb'
-import { sign } from 'jsonwebtoken'
 import request from 'supertest'
-import { AddSurveyModel } from '@/domain/usecases'
+import { makeAccessToken, makeSurvey, mockAnswer } from '@/tests/mocks'
 
-const answer = faker.datatype.string()
-
-const makeFakeAddSurveyData = (): AddSurveyModel => ({
-  question: faker.random.words(),
-  answers: [{
-    image: faker.internet.url(),
-    answer: faker.datatype.string()
-  }, {
-    answer
-  }],
-  date: new Date()
-})
-
-const makeSurvey = async (): Promise<string> => {
-  const { insertedId } = await surveyCollection.insertOne(makeFakeAddSurveyData())
-  return insertedId.toHexString()
-}
-
-const makeAccessToken = async (role?: string): Promise<string> => {
-  const res = await accountCollection.insertOne({
-    name: 'Rodrigo',
-    email: 'rodrigo.manguinho@gmail.com',
-    password: '123',
-    role
-  })
-  const id = res.insertedId.toHexString()
-  const accessToken = sign({ id }, process.env.JWT_SECRET)
-  await accountCollection.updateOne({
-    _id: res.insertedId
-  }, {
-    $set: {
-      accessToken
-    }
-  })
-  return accessToken
-}
+const answer = mockAnswer
 
 let surveyCollection: Collection
 let accountCollection: Collection

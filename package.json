@@ -1,6 +1,6 @@
 {
   "name": "fun-survey-plus",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Fun Survey PLus, Node API using TDD, Clean Architecture and Typescript",
   "keywords": [
     "Node",
