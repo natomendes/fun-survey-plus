@@ -1,41 +1,14 @@
-import { faker } from '@faker-js/faker'
-import { SurveyModel, LoadSurveysRepository } from '@/data/usecases/usecases-protocols'
+import { LoadSurveysRepository } from '@/data/usecases/usecases-protocols'
 import { DbLoadSurveys } from '@/data/usecases'
-
-const makeFakeSurveysList = (): SurveyModel[] => [{
-  id: faker.datatype.uuid(),
-  question: faker.random.words(),
-  answers: [{
-    image: faker.internet.url(),
-    answer: faker.random.word()
-  }],
-  date: new Date()
-}, {
-  id: faker.datatype.uuid(),
-  question: faker.random.words(),
-  answers: [{
-    image: faker.internet.url(),
-    answer: faker.random.word()
-  }],
-  date: new Date()
-}]
-
-const makeLoadSurveysRepositoryStub = (surveysList: SurveyModel[]): LoadSurveysRepository => {
-  class LoadSurveysRepositoryStub implements LoadSurveysRepository {
-    async loadAll (): Promise<SurveyModel[]> {
-      return surveysList
-    }
-  }
-  return new LoadSurveysRepositoryStub()
-}
+import { mockLoadSurveysRepository, mockSurveyList } from '@/tests/mocks'
 
 type SutTypes = {
   sut: DbLoadSurveys
   loadSurveysRepositoryStub: LoadSurveysRepository
 }
 
-const makeSut = (surveysList = makeFakeSurveysList()): SutTypes => {
-  const loadSurveysRepositoryStub = makeLoadSurveysRepositoryStub(surveysList)
+const makeSut = (surveysList = mockSurveyList()): SutTypes => {
+  const loadSurveysRepositoryStub = mockLoadSurveysRepository(surveysList)
   const sut = new DbLoadSurveys(loadSurveysRepositoryStub)
   return {
     sut,
@@ -52,7 +25,7 @@ describe('DbLoadSurveys ', () => {
   })
 
   it('Should return a list of surveys on success', async () => {
-    const surveysList = makeFakeSurveysList()
+    const surveysList = mockSurveyList()
     const { sut } = makeSut(surveysList)
     const surveys = await sut.load()
     expect(surveys).toEqual(surveysList)

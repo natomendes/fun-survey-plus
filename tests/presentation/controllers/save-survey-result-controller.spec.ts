@@ -4,21 +4,12 @@ import { forbidden, ok, serverError } from '@/presentation/helpers/http-helper'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
 import { faker } from '@faker-js/faker'
 import MockDate from 'mockdate'
+import { mockAnswer, mockSurvey } from '@/tests/mocks'
 
-const answer = faker.random.word()
+const answer = mockAnswer
 const accountId = faker.database.mongodbObjectId()
 const surveyId = faker.database.mongodbObjectId()
 const saveResultId = faker.database.mongodbObjectId()
-
-const makeFakeSurvey = (): SurveyModel => ({
-  id: surveyId,
-  question: faker.random.words(),
-  answers: [{
-    image: faker.internet.url(),
-    answer
-  }],
-  date: new Date()
-})
 
 const makeFakeSurveyResult = (): SurveyResultModel => ({
   id: saveResultId,
@@ -41,7 +32,7 @@ const makeFakeRequest = (): HttpRequest => ({
 const makeLoadSurverById = (): LoadSurveyById => {
   class LoadSurveyByIdStub implements LoadSurveyById {
     async load (_surveyId: String): Promise<SurveyModel> {
-      return makeFakeSurvey()
+      return mockSurvey()
     }
   }
 

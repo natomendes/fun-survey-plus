@@ -1,44 +1,17 @@
 import MockDate from 'mockdate'
-import { faker } from '@faker-js/faker'
 import { ServerError } from '@/presentation/errors'
 import { LoadSurveysController } from '@/presentation/controllers'
 import { noContent, ok, serverError } from '@/presentation/helpers/http-helper'
-import { SurveyModel, LoadSurveys } from '@/presentation/controllers/controllers-protocols'
-
-const makeFakeSurveysList = (): SurveyModel[] => [{
-  id: faker.datatype.uuid(),
-  question: faker.random.words(),
-  answers: [{
-    image: faker.internet.url(),
-    answer: faker.random.word()
-  }],
-  date: new Date()
-}, {
-  id: faker.datatype.uuid(),
-  question: faker.random.words(),
-  answers: [{
-    image: faker.internet.url(),
-    answer: faker.random.word()
-  }],
-  date: new Date()
-}]
-
-const makeLoadSurveysStub = (surveyList: SurveyModel[]): LoadSurveys => {
-  class LoadSurveysStub implements LoadSurveys {
-    async load (): Promise<SurveyModel[]> {
-      return surveyList
-    }
-  }
-  return new LoadSurveysStub()
-}
+import { LoadSurveys } from '@/presentation/controllers/controllers-protocols'
+import { mockLoadSurveys, mockSurveyList } from '@/tests/mocks'
 
 type SutTypes = {
   sut: LoadSurveysController
   loadSurveysStub: LoadSurveys
 }
 
-const makeSut = (surveyList = makeFakeSurveysList()): SutTypes => {
-  const loadSurveysStub = makeLoadSurveysStub(surveyList)
+const makeSut = (surveyList = mockSurveyList()): SutTypes => {
+  const loadSurveysStub = mockLoadSurveys(surveyList)
   const sut = new LoadSurveysController(loadSurveysStub)
   return {
     sut,
@@ -63,7 +36,7 @@ describe('LoadSurveys Controller', () => {
   })
 
   it('Should return ok on success', async () => {
-    const surveyList = makeFakeSurveysList()
+    const surveyList = mockSurveyList()
     const { sut } = makeSut(surveyList)
     const httpResponse = await sut.handle({})
     expect(httpResponse).toEqual(ok(surveyList))

@@ -1,5 +1,5 @@
 import { AccountModel } from '@/domain/models'
-import { AddAccountParams } from '@/domain/usecases'
+import { AddAccount, AddAccountParams, LoadAccountByToken } from '@/domain/usecases'
 import { faker } from '@faker-js/faker'
 
 export const mockAccount = (): AccountModel => ({
@@ -14,3 +14,21 @@ export const mockAddAccountParams = (): AddAccountParams => ({
   email: faker.internet.email(),
   password: faker.internet.password()
 })
+
+export const mockAddAccount = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    async add (_account: AddAccountParams): Promise<boolean> {
+      return true
+    }
+  }
+  return new AddAccountStub()
+}
+
+export const mockLoadAccountByToken = (account: AccountModel): LoadAccountByToken => {
+  class LoadAccountByTokenStub implements LoadAccountByToken {
+    async load (_accessToken: string, _role?: string): Promise<AccountModel> {
+      return account
+    }
+  }
+  return new LoadAccountByTokenStub()
+}

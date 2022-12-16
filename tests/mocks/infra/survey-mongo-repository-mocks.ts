@@ -1,4 +1,4 @@
-import { AddSurveyParams, AddSurveyRepository, LoadSurveyByIdRepository, SurveyModel } from '@/data/protocols'
+import { AddSurveyParams, AddSurveyRepository, LoadSurveyByIdRepository, LoadSurveysRepository, SurveyModel } from '@/data/protocols'
 
 export const mockAddSurveyRepositoryStub = (): AddSurveyRepository => {
   class AddSurveyRepositoryStub implements AddSurveyRepository {
@@ -14,4 +14,13 @@ export const mockLoadSurveyByIdRepository = (survey: SurveyModel): LoadSurveyByI
     }
   }
   return new LoadSurveyByIdRepositoryStub()
+}
+
+export const mockLoadSurveysRepository = (surveysList: SurveyModel[]): LoadSurveysRepository => {
+  class LoadSurveysRepositoryStub implements LoadSurveysRepository {
+    async loadAll (): Promise<SurveyModel[]> {
+      return surveysList
+    }
+  }
+  return new LoadSurveysRepositoryStub()
 }

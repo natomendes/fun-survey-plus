@@ -1,38 +1,8 @@
 import request from 'supertest'
-import { sign } from 'jsonwebtoken'
 import { Collection } from 'mongodb'
-import { faker } from '@faker-js/faker'
 import app from '@/main/config/app'
 import { MongoHelper } from '@/infra'
-
-const makeFakeAddSurveyData = (): any => ({
-  question: faker.random.words(),
-  answers: [{
-    image: faker.internet.url(),
-    answer: faker.datatype.string()
-  }, {
-    answer: faker.datatype.string()
-  }]
-})
-
-const makeAccessToken = async (role?: string): Promise<string> => {
-  const res = await accountCollection.insertOne({
-    name: 'Rodrigo',
-    email: 'rodrigo.manguinho@gmail.com',
-    password: '123',
-    role
-  })
-  const id = res.insertedId.toHexString()
-  const accessToken = sign({ id }, process.env.JWT_SECRET)
-  await accountCollection.updateOne({
-    _id: res.insertedId
-  }, {
-    $set: {
-      accessToken
-    }
-  })
-  return accessToken
-}
+import { makeAddSurveyRequest, makeAccessToken } from '@/tests/mocks'
 
 let surveyCollection: Collection
 let accountCollection: Collection
@@ -57,7 +27,7 @@ describe('Survey Routes', () => {
     it('Should return 403 on add survey without access token', async () => {
       await request(app)
         .post('/api/surveys')
-        .send(makeFakeAddSurveyData())
+        .send(makeAddSurveyRequest())
         .expect(403)
     })
 
@@ -66,7 +36,7 @@ describe('Survey Routes', () => {
       await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
-        .send(makeFakeAddSurveyData())
+        .send(makeAddSurveyRequest())
         .expect(204)
     })
   })
