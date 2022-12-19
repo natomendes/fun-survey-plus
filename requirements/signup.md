@@ -11,7 +11,7 @@
 7. ✅ **Create** an user account with the data provided, **replacing** the password with the hashed password.
 8. ✅ Generate an access **token** from the user ID.
 9. ✅ **Update** the user account with the access token created.
-10. ✅ Returns **200** with the access token and user name.
+10. ✅ Returns **200** with the access token.
 
 > ## Exceptions
 
