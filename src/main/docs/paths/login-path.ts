@@ -24,13 +24,16 @@ export const loginPath = {
         }
       },
       400: {
-        description: 'Bad request, invalid email or password'
+        $ref: '#components/badRequest'
       },
       401: {
-        description: 'Unauthorized, invalid credentials'
+        $ref: '#components/unauthorized'
+      },
+      404: {
+        $ref: '#components/notFound'
       },
       '5XX': {
-        description: 'Server error, internal server error'
+        $ref: '#components/serverError'
       }
     }
   }
