@@ -1,16 +1,19 @@
-export const signUpParamsSchema = {
+export const saveSurveyResultSchema = {
   type: 'object',
   properties: {
-    name: {
+    id: {
       type: 'string'
     },
-    email: {
+    surveyId: {
       type: 'string'
     },
-    password: {
+    accountId: {
       type: 'string'
     },
-    passwordConfirmation: {
+    answer: {
+      type: 'string'
+    },
+    date: {
       type: 'string'
     }
   }
