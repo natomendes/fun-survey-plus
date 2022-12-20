@@ -1,11 +1,12 @@
-import { HttpRequest, LoadSurveyById } from '@/presentation/controllers/controllers-protocols'
+import { HttpRequest, LoadSurveyById, LoadSurveyResult } from '@/presentation/controllers/controllers-protocols'
 import { LoadSurveyResultController } from '@/presentation/controllers'
 import { forbidden, serverError } from '@/presentation/helpers/http-helper'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
-import { mockLoadSurverById } from '@/tests/mocks'
+import { mockLoadSurverById, mockLoadSurveyResult, mockSurveyResult } from '@/tests/mocks'
 import { faker } from '@faker-js/faker'
 
 const surveyId = faker.database.mongodbObjectId()
+const surveyResult = mockSurveyResult(surveyId)
 
 const makeFakeRequest = (): HttpRequest => ({
   params: {
@@ -16,14 +17,17 @@ const makeFakeRequest = (): HttpRequest => ({
 type SutTypes = {
   sut: LoadSurveyResultController
   loadSurverByIdStub: LoadSurveyById
+  loadSurveyResultStub: LoadSurveyResult
 }
 
 const makeSut = (): SutTypes => {
   const loadSurverByIdStub = mockLoadSurverById()
-  const sut = new LoadSurveyResultController(loadSurverByIdStub)
+  const loadSurveyResultStub = mockLoadSurveyResult(surveyResult)
+  const sut = new LoadSurveyResultController(loadSurverByIdStub, loadSurveyResultStub)
   return {
     sut,
-    loadSurverByIdStub
+    loadSurverByIdStub,
+    loadSurveyResultStub
   }
 }
 
@@ -48,5 +52,12 @@ describe('LoadSurveyResultController', () => {
       .mockRejectedValueOnce(new Error())
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
+  })
+
+  it('Should call LoadSurveyResult with correct value', async () => {
+    const { sut, loadSurveyResultStub } = makeSut()
+    const loadSpy = jest.spyOn(loadSurveyResultStub, 'load')
+    await sut.handle(makeFakeRequest())
+    expect(loadSpy).toHaveBeenCalledWith(surveyId)
   })
 })

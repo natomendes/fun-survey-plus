@@ -1,5 +1,5 @@
 import { SurveyResultModel } from '@/domain/models'
-import { SaveSurveyResult, SaveSurveyResultParams } from '@/domain/usecases'
+import { LoadSurveyResult, SaveSurveyResult, SaveSurveyResultParams } from '@/domain/usecases'
 import { mockAnswer } from './survey-mocks'
 import { faker } from '@faker-js/faker'
 
@@ -41,4 +41,14 @@ export const mockSaveSurveyResult = (surveyResult: SurveyResultModel): SaveSurve
   }
 
   return new SaveSurveyResultStub()
+}
+
+export const mockLoadSurveyResult = (surveyResult: SurveyResultModel): LoadSurveyResult => {
+  class LoadSurveyResultStub implements LoadSurveyResult {
+    async load (_surveyId: string): Promise<SurveyResultModel> {
+      return surveyResult
+    }
+  }
+
+  return new LoadSurveyResultStub()
 }
