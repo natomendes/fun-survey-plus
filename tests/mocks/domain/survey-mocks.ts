@@ -36,10 +36,13 @@ export const mockAddSurveyParams = (): AddSurveyParams => ({
   date: new Date()
 })
 
-export const mockSurvey = (): SurveyModel => ({
-  id: faker.database.mongodbObjectId(),
+export const mockSurvey = (id = faker.database.mongodbObjectId()): SurveyModel => ({
+  id,
   question: faker.random.words(),
   answers: [{
+    image: faker.internet.url(),
+    answer: faker.random.word()
+  }, {
     image: faker.internet.url(),
     answer: mockAnswer
   }],
