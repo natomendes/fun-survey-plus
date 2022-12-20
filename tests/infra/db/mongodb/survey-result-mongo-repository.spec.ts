@@ -68,4 +68,30 @@ describe('Survey Result Mongo Repository', () => {
       expect(surveyResult.answers[1].percent).toBe(0)
     })
   })
+  describe('loadBySurveyId()', () => {
+    it('Should load a survey result', async () => {
+      const accountId = await makeAccount()
+      const surveyId = await makeSurvey()
+      const survey = await surveyCollection.findOne({ _id: new ObjectId(surveyId) })
+      await surveyResultCollection.insertMany([{
+        surveyId: new ObjectId(surveyId),
+        accountId: new ObjectId(accountId),
+        answer: survey.answers[0].answer,
+        date: new Date()
+      }, {
+        surveyId: new ObjectId(surveyId),
+        accountId: new ObjectId(accountId),
+        answer: survey.answers[0].answer,
+        date: new Date()
+      }])
+      const sut = makeSut()
+      const surveyResult = await sut.loadBySurveyId(surveyId)
+      expect(surveyResult.surveyId).toEqual(new ObjectId(surveyId))
+      expect(surveyResult.answers[0].answer).toBe(survey.answers[0].answer)
+      expect(surveyResult.answers[0].count).toBe(2)
+      expect(surveyResult.answers[0].percent).toBe(100)
+      expect(surveyResult.answers[1].count).toBe(0)
+      expect(surveyResult.answers[1].percent).toBe(0)
+    })
+  })
 })
