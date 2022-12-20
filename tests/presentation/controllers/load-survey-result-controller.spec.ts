@@ -6,12 +6,14 @@ import { mockLoadSurverById, mockLoadSurveyResult, mockSurveyResult } from '@/te
 import { faker } from '@faker-js/faker'
 
 const surveyId = faker.database.mongodbObjectId()
+const accountId = faker.database.mongodbObjectId()
 const surveyResult = mockSurveyResult(surveyId)
 
 const mockRequest = (): HttpRequest => ({
   params: {
     surveyId
-  }
+  },
+  accountId
 })
 
 type SutTypes = {
@@ -58,14 +60,7 @@ describe('LoadSurveyResultController', () => {
     const { sut, loadSurveyResultStub } = makeSut()
     const loadSpy = jest.spyOn(loadSurveyResultStub, 'load')
     await sut.handle(mockRequest())
-    expect(loadSpy).toHaveBeenCalledWith(surveyId)
-  })
-
-  it('Should call LoadSurveyResult with correct value', async () => {
-    const { sut, loadSurveyResultStub } = makeSut()
-    const loadSpy = jest.spyOn(loadSurveyResultStub, 'load')
-    await sut.handle(mockRequest())
-    expect(loadSpy).toHaveBeenCalledWith(surveyId)
+    expect(loadSpy).toHaveBeenCalledWith(surveyId, accountId)
   })
 
   it('Should return server error if LoadSurveyResult throws', async () => {

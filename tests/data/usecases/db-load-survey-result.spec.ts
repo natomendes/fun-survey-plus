@@ -1,6 +1,9 @@
 import { mockLoadSurveyByIdRepository, mockLoadSurveyResultRepository, mockSurveyResult } from '@/tests/mocks'
 import { LoadSurveyByIdRepository, LoadSurveyResultRepository } from '@/data/usecases/usecases-protocols'
 import { DbLoadSurveyResult } from '@/data/usecases'
+import { faker } from '@faker-js/faker'
+
+const accountId = faker.database.mongodbObjectId()
 
 type SutTypes = {
   sut: DbLoadSurveyResult
@@ -35,14 +38,14 @@ describe('DbLoadSurveyResult Usecase', () => {
     const surveyResult = mockSurveyResult()
     const { sut, loadSurveyResultRepositoryStub } = makeSut(surveyResult)
     const loadBySurveyIdSpy = jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
-    await sut.load(surveyResult.surveyId)
-    expect(loadBySurveyIdSpy).toHaveBeenCalledWith(surveyResult.surveyId)
+    await sut.load(surveyResult.surveyId, accountId)
+    expect(loadBySurveyIdSpy).toHaveBeenCalledWith(surveyResult.surveyId, accountId)
   })
 
   it('Should return a survey result on success', async () => {
     const surveyResultMock = mockSurveyResult()
     const { sut } = makeSut(surveyResultMock)
-    const surveyResult = await sut.load(surveyResultMock.surveyId)
+    const surveyResult = await sut.load(surveyResultMock.surveyId, accountId)
     expect(surveyResult).toEqual(surveyResultMock)
   })
 
@@ -50,7 +53,7 @@ describe('DbLoadSurveyResult Usecase', () => {
     const { sut, loadSurveyResultRepositoryStub } = makeSut()
     jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
       .mockRejectedValueOnce(new Error())
-    const promise = sut.load(mockSurveyResult().surveyId)
+    const promise = sut.load(mockSurveyResult().surveyId, accountId)
     await expect(promise).rejects.toThrow()
   })
 
@@ -60,7 +63,7 @@ describe('DbLoadSurveyResult Usecase', () => {
     const loadByIdSpy = jest.spyOn(loadSurveyByIdRepositoryStub, 'loadById')
     jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
       .mockResolvedValueOnce(null)
-    await sut.load(surveyResultMock.surveyId)
+    await sut.load(surveyResultMock.surveyId, accountId)
     expect(loadByIdSpy).toHaveBeenCalledWith(surveyResultMock.surveyId)
   })
 
@@ -69,7 +72,7 @@ describe('DbLoadSurveyResult Usecase', () => {
     const { sut, loadSurveyResultRepositoryStub } = makeSut(surveyResultMock)
     jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
       .mockResolvedValueOnce(null)
-    const surveyResult = await sut.load(surveyResultMock.surveyId)
+    const surveyResult = await sut.load(surveyResultMock.surveyId, accountId)
     expect(surveyResult).toEqual(surveyResultMock)
   })
 })

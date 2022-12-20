@@ -34,7 +34,7 @@ describe('DbSaveSurveyResult', () => {
     const { sut, loadSurveyResultRepositoryStub } = makeSut()
     const loadBySurveyIdSpy = jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
     await sut.save(saveSurveyResultParams)
-    expect(loadBySurveyIdSpy).toHaveBeenCalledWith(saveSurveyResultParams.surveyId)
+    expect(loadBySurveyIdSpy).toHaveBeenCalledWith(saveSurveyResultParams.surveyId, saveSurveyResultParams.accountId)
   })
 
   it('Should return a survey result on success', async () => {

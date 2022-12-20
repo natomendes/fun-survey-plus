@@ -12,12 +12,14 @@ export const mockSurveyResult = (
     image: faker.internet.url(),
     answer: faker.random.word(),
     count: 0,
-    percent: 0
+    percent: 0,
+    isCurrentAccountAnswer: false
   }, {
     image: faker.internet.url(),
     answer: mockAnswer,
     count: 0,
-    percent: 0
+    percent: 0,
+    isCurrentAccountAnswer: false
   }],
   date: new Date()
 })

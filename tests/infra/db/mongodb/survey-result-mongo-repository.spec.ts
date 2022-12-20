@@ -85,8 +85,8 @@ describe('Survey Result Mongo Repository', () => {
         date: new Date()
       }])
       const sut = makeSut()
-      const surveyResult = await sut.loadBySurveyId(surveyId)
-      expect(surveyResult.surveyId).toEqual(new ObjectId(surveyId))
+      const surveyResult = await sut.loadBySurveyId(surveyId, accountId)
+      expect(surveyResult.surveyId).toEqual(surveyId)
       expect(surveyResult.answers[0].answer).toBe(survey.answers[0].answer)
       expect(surveyResult.answers[0].count).toBe(2)
       expect(surveyResult.answers[0].percent).toBe(100)
@@ -95,9 +95,10 @@ describe('Survey Result Mongo Repository', () => {
     })
 
     it('Should return null if there is no survey result', async () => {
+      const accountId = await makeAccount()
       const surveyId = await makeSurvey()
       const sut = makeSut()
-      const surveyResult = await sut.loadBySurveyId(surveyId)
+      const surveyResult = await sut.loadBySurveyId(surveyId, accountId)
       expect(surveyResult).toBeNull()
     })
   })
