@@ -1,4 +1,4 @@
-export const saveSurveyResultSchema = {
+export const surveyResultSchema = {
   type: 'object',
   properties: {
     surveyId: {
