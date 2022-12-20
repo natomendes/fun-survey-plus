@@ -54,5 +54,13 @@ describe('Survey Routes', () => {
         .get('/api/surveys/any_id/results')
         .expect(403)
     })
+
+    it('Should return 403 on load survey result with invalid surveyId', async () => {
+      const accessToken = await makeAccessToken()
+      await request(app)
+        .get('/api/surveys/639a8be7c8b6750ab2420539/results')
+        .set('x-access-token', accessToken)
+        .expect(403)
+    })
   })
 })
