@@ -11,13 +11,13 @@ export const mockSurveyResult = (
   answers: [{
     image: faker.internet.url(),
     answer: faker.random.word(),
-    count: faker.datatype.number(),
-    percent: faker.datatype.number()
+    count: 0,
+    percent: 0
   }, {
     image: faker.internet.url(),
     answer: mockAnswer,
-    count: faker.datatype.number(),
-    percent: faker.datatype.number()
+    count: 0,
+    percent: 0
   }],
   date: new Date()
 })

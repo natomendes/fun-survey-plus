@@ -1,4 +1,4 @@
-import { mockLoadSurveyByIdRepository, mockLoadSurveyResultRepository, mockSurvey, mockSurveyResult } from '@/tests/mocks'
+import { mockLoadSurveyByIdRepository, mockLoadSurveyResultRepository, mockSurveyResult } from '@/tests/mocks'
 import { LoadSurveyByIdRepository, LoadSurveyResultRepository } from '@/data/usecases/usecases-protocols'
 import { DbLoadSurveyResult } from '@/data/usecases'
 
@@ -9,7 +9,18 @@ type SutTypes = {
 }
 
 const makeSut = (surveyResult = mockSurveyResult()): SutTypes => {
-  const loadSurveyByIdRepositoryStub = mockLoadSurveyByIdRepository(mockSurvey(surveyResult.surveyId))
+  const loadSurveyByIdRepositoryStub = mockLoadSurveyByIdRepository({
+    id: surveyResult.surveyId,
+    question: surveyResult.question,
+    answers: [{
+      image: surveyResult.answers[0].image,
+      answer: surveyResult.answers[0].answer
+    }, {
+      image: surveyResult.answers[1].image,
+      answer: surveyResult.answers[1].answer
+    }],
+    date: surveyResult.date
+  })
   const loadSurveyResultRepositoryStub = mockLoadSurveyResultRepository(surveyResult)
   const sut = new DbLoadSurveyResult(loadSurveyResultRepositoryStub, loadSurveyByIdRepositoryStub)
   return {
@@ -51,5 +62,14 @@ describe('DbLoadSurveyResult Usecase', () => {
       .mockResolvedValueOnce(null)
     await sut.load(surveyResultMock.surveyId)
     expect(loadByIdSpy).toHaveBeenCalledWith(surveyResultMock.surveyId)
+  })
+
+  it('Should return a survey result with count 0 and percent 0 in all answers if LoadSurveyResultRepository return null', async () => {
+    const surveyResultMock = mockSurveyResult()
+    const { sut, loadSurveyResultRepositoryStub } = makeSut(surveyResultMock)
+    jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
+      .mockResolvedValueOnce(null)
+    const surveyResult = await sut.load(surveyResultMock.surveyId)
+    expect(surveyResult).toEqual(surveyResultMock)
   })
 })
