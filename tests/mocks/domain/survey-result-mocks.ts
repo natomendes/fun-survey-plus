@@ -1,5 +1,5 @@
 import { SurveyResultModel } from '@/domain/models'
-import { SaveSurveyResultParams } from '@/domain/usecases'
+import { SaveSurveyResult, SaveSurveyResultParams } from '@/domain/usecases'
 import { mockAnswer } from './survey-mocks'
 import { faker } from '@faker-js/faker'
 
@@ -32,3 +32,13 @@ export const mockSaveSurveyResultParams = (
   answer,
   date: new Date()
 })
+
+export const mockSaveSurveyResult = (surveyResult: SurveyResultModel): SaveSurveyResult => {
+  class SaveSurveyResultStub implements SaveSurveyResult {
+    async save (_surveyData: SaveSurveyResultParams): Promise<SurveyResultModel> {
+      return surveyResult
+    }
+  }
+
+  return new SaveSurveyResultStub()
+}

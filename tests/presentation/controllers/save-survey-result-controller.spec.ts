@@ -1,10 +1,10 @@
-import { HttpRequest, SurveyModel, SurveyResultModel, LoadSurveyById, SaveSurveyResult, SaveSurveyResultParams } from '@/presentation/controllers/controllers-protocols'
+import { HttpRequest, LoadSurveyById, SaveSurveyResult } from '@/presentation/controllers/controllers-protocols'
 import { SaveSurveyResultController } from '@/presentation/controllers'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http-helper'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
 import { faker } from '@faker-js/faker'
 import MockDate from 'mockdate'
-import { mockAnswer, mockSurvey, mockSurveyResult } from '@/tests/mocks'
+import { mockAnswer, mockLoadSurverById, mockSaveSurveyResult, mockSurveyResult } from '@/tests/mocks'
 
 const answer = mockAnswer
 const accountId = faker.database.mongodbObjectId()
@@ -22,26 +22,6 @@ const makeFakeRequest = (): HttpRequest => ({
 
 const surveyResult = mockSurveyResult(surveyId)
 
-const makeLoadSurverById = (): LoadSurveyById => {
-  class LoadSurveyByIdStub implements LoadSurveyById {
-    async load (_surveyId: String): Promise<SurveyModel> {
-      return mockSurvey()
-    }
-  }
-
-  return new LoadSurveyByIdStub()
-}
-
-const makeSaveSurveyResult = (): SaveSurveyResult => {
-  class SaveSurveyResultStub implements SaveSurveyResult {
-    async save (_surveyData: SaveSurveyResultParams): Promise<SurveyResultModel> {
-      return surveyResult
-    }
-  }
-
-  return new SaveSurveyResultStub()
-}
-
 type SutTypes = {
   sut: SaveSurveyResultController
   loadSurverByIdStub: LoadSurveyById
@@ -50,8 +30,8 @@ type SutTypes = {
 
 const makeSut = (
 ): SutTypes => {
-  const loadSurverByIdStub = makeLoadSurverById()
-  const saveSurveyResultStub = makeSaveSurveyResult()
+  const loadSurverByIdStub = mockLoadSurverById()
+  const saveSurveyResultStub = mockSaveSurveyResult(surveyResult)
   const sut = new SaveSurveyResultController(loadSurverByIdStub, saveSurveyResultStub)
   return {
     sut,

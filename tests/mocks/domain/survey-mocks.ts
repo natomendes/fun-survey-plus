@@ -1,5 +1,5 @@
 import { SurveyModel } from '@/domain/models'
-import { AddSurvey, AddSurveyParams, LoadSurveys } from '@/domain/usecases'
+import { AddSurvey, AddSurveyParams, LoadSurveyById, LoadSurveys } from '@/domain/usecases'
 import { faker } from '@faker-js/faker'
 
 export const mockAnswer = faker.datatype.string()
@@ -66,3 +66,13 @@ export const mockSurveyList = (): SurveyModel[] => [{
   }],
   date: new Date()
 }]
+
+export const mockLoadSurverById = (): LoadSurveyById => {
+  class LoadSurveyByIdStub implements LoadSurveyById {
+    async load (_surveyId: String): Promise<SurveyModel> {
+      return mockSurvey()
+    }
+  }
+
+  return new LoadSurveyByIdStub()
+}
