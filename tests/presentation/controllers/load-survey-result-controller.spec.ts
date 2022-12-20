@@ -1,6 +1,6 @@
 import { HttpRequest, LoadSurveyById, LoadSurveyResult } from '@/presentation/controllers/controllers-protocols'
 import { LoadSurveyResultController } from '@/presentation/controllers'
-import { forbidden, serverError } from '@/presentation/helpers/http-helper'
+import { forbidden, ok, serverError } from '@/presentation/helpers/http-helper'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
 import { mockLoadSurverById, mockLoadSurveyResult, mockSurveyResult } from '@/tests/mocks'
 import { faker } from '@faker-js/faker'
@@ -59,5 +59,18 @@ describe('LoadSurveyResultController', () => {
     const loadSpy = jest.spyOn(loadSurveyResultStub, 'load')
     await sut.handle(makeFakeRequest())
     expect(loadSpy).toHaveBeenCalledWith(surveyId)
+  })
+
+  it('Should call LoadSurveyResult with correct value', async () => {
+    const { sut, loadSurveyResultStub } = makeSut()
+    const loadSpy = jest.spyOn(loadSurveyResultStub, 'load')
+    await sut.handle(makeFakeRequest())
+    expect(loadSpy).toHaveBeenCalledWith(surveyId)
+  })
+
+  it('Should return ok on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(ok(surveyResult))
   })
 })
