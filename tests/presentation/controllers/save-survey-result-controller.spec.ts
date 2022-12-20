@@ -10,7 +10,7 @@ const answer = mockAnswer
 const accountId = faker.database.mongodbObjectId()
 const surveyId = faker.database.mongodbObjectId()
 
-const makeFakeRequest = (): HttpRequest => ({
+const mockRequest = (): HttpRequest => ({
   params: {
     surveyId
   },
@@ -51,7 +51,7 @@ describe('SaveSurveyResultController', () => {
   it('Should call LoadSurveyById with correct value', async () => {
     const { sut, loadSurverByIdStub } = makeSut()
     const loadSpy = jest.spyOn(loadSurverByIdStub, 'load')
-    const httpRequest = makeFakeRequest()
+    const httpRequest = mockRequest()
     await sut.handle(httpRequest)
     expect(loadSpy).toHaveBeenCalledWith(surveyId)
   })
@@ -59,7 +59,7 @@ describe('SaveSurveyResultController', () => {
   it('Should return forbidden if LoadSurveyById returns null', async () => {
     const { sut, loadSurverByIdStub } = makeSut()
     jest.spyOn(loadSurverByIdStub, 'load').mockResolvedValueOnce(null)
-    const httpResponse = await sut.handle(makeFakeRequest())
+    const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
   })
 
@@ -67,7 +67,7 @@ describe('SaveSurveyResultController', () => {
     const { sut, loadSurverByIdStub } = makeSut()
     jest.spyOn(loadSurverByIdStub, 'load')
       .mockRejectedValueOnce(new Error())
-    const httpResponse = await sut.handle(makeFakeRequest())
+    const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
   })
 
@@ -87,7 +87,7 @@ describe('SaveSurveyResultController', () => {
   it('Should call SaveSurveyResult with correct values', async () => {
     const { sut, saveSurveyResultStub } = makeSut()
     const saveSpy = jest.spyOn(saveSurveyResultStub, 'save')
-    await sut.handle(makeFakeRequest())
+    await sut.handle(mockRequest())
 
     expect(saveSpy).toHaveBeenCalledWith({
       surveyId,
@@ -101,13 +101,13 @@ describe('SaveSurveyResultController', () => {
     const { sut, saveSurveyResultStub } = makeSut()
     jest.spyOn(saveSurveyResultStub, 'save')
       .mockRejectedValueOnce(new Error())
-    const httpResponse = await sut.handle(makeFakeRequest())
+    const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
   })
 
   it('Should return ok on success', async () => {
     const { sut } = makeSut()
-    const httpResponse = await sut.handle(makeFakeRequest())
+    const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(ok(surveyResult))
   })
 })
