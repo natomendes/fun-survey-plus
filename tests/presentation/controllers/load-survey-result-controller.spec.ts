@@ -1,5 +1,7 @@
 import { HttpRequest, LoadSurveyById } from '@/presentation/controllers/controllers-protocols'
 import { LoadSurveyResultController } from '@/presentation/controllers'
+import { forbidden } from '@/presentation/helpers/http-helper'
+import { InvalidParamError } from '@/presentation/errors'
 import { mockLoadSurverById } from '@/tests/mocks'
 import { faker } from '@faker-js/faker'
 
@@ -31,5 +33,12 @@ describe('LoadSurveyResultController', () => {
     const loadSpy = jest.spyOn(loadSurverByIdStub, 'load')
     await sut.handle(makeFakeRequest())
     expect(loadSpy).toHaveBeenCalledWith(surveyId)
+  })
+
+  it('Should return forbidden if LoadSurveyById returns null', async () => {
+    const { sut, loadSurverByIdStub } = makeSut()
+    jest.spyOn(loadSurverByIdStub, 'load').mockResolvedValueOnce(null)
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('surveyId')))
   })
 })
