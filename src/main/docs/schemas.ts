@@ -10,5 +10,6 @@ export default {
   surveyAnswer: Schemas.surveyAnswerSchema,
   addSurveyParams: Schemas.addSurveyParamsSchema,
   saveSurveyResultParams: Schemas.saveSurveyResultParamsSchema,
-  saveSurveyResult: Schemas.saveSurveyResultSchema
+  saveSurveyResult: Schemas.saveSurveyResultSchema,
+  surveyResultAnswer: Schemas.surveyResultAnswerSchema
 }
