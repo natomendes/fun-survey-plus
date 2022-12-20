@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from 'mongodb'
 import { SurveyResultMongoRepository, MongoHelper } from '@/infra/db/mongodb'
-import { mockAddAccountParams, mockAddSurveyParams, mockAnswer, mockSaveSurveyResultParams } from '@/tests/mocks'
+import { mockAddAccountParams, mockAddSurveyParams, mockSaveSurveyResultParams } from '@/tests/mocks'
 
 const makeSurvey = async (addSurveyData = mockAddSurveyParams()): Promise<string> => {
   const { insertedId } = await surveyCollection.insertOne(addSurveyData)
@@ -44,13 +44,12 @@ describe('Survey Result Mongo Repository', () => {
       const surveyId = await makeSurvey()
       const sut = makeSut()
       const saveSurveyResultParams = mockSaveSurveyResultParams(surveyId, accountId)
-      const surveyResult = await sut.saveResult(saveSurveyResultParams)
-      expect(surveyResult.surveyId).toEqual(new ObjectId(surveyId))
-      expect(surveyResult.answers[0].answer).toBe(mockAnswer)
-      expect(surveyResult.answers[0].count).toBe(1)
-      expect(surveyResult.answers[0].percent).toBe(100)
-      expect(surveyResult.answers[1].count).toBe(0)
-      expect(surveyResult.answers[1].percent).toBe(0)
+      await sut.saveResult(saveSurveyResultParams)
+      const surveyResult = await surveyResultCollection.findOne({
+        surveyId: new ObjectId(surveyId),
+        accountId: new ObjectId(accountId)
+      })
+      expect(surveyResult).toBeTruthy()
     })
 
     it('Should update survey result if its not new', async () => {
@@ -59,13 +58,14 @@ describe('Survey Result Mongo Repository', () => {
       const survey = await surveyCollection.findOne({ _id: new ObjectId(surveyId) })
       const saveSurveyResultParams = mockSaveSurveyResultParams(surveyId, accountId, survey.answers[0].answer)
       const sut = makeSut()
-      const surveyResult = await sut.saveResult(saveSurveyResultParams)
-      expect(surveyResult.surveyId).toEqual(new ObjectId(surveyId))
-      expect(surveyResult.answers[0].answer).toBe(survey.answers[0].answer)
-      expect(surveyResult.answers[0].count).toBe(1)
-      expect(surveyResult.answers[0].percent).toBe(100)
-      expect(surveyResult.answers[1].count).toBe(0)
-      expect(surveyResult.answers[1].percent).toBe(0)
+      await sut.saveResult(saveSurveyResultParams)
+      const surveyResult = await surveyResultCollection
+        .find({
+          surveyId: new ObjectId(surveyId),
+          accountId: new ObjectId(accountId)
+        })
+        .toArray()
+      expect(surveyResult.length).toBe(1)
     })
   })
   describe('loadBySurveyId()', () => {
