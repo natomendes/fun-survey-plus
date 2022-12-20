@@ -4,20 +4,11 @@ import { forbidden, ok, serverError } from '@/presentation/helpers/http-helper'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
 import { faker } from '@faker-js/faker'
 import MockDate from 'mockdate'
-import { mockAnswer, mockSurvey } from '@/tests/mocks'
+import { mockAnswer, mockSurvey, mockSurveyResult } from '@/tests/mocks'
 
 const answer = mockAnswer
 const accountId = faker.database.mongodbObjectId()
 const surveyId = faker.database.mongodbObjectId()
-const saveResultId = faker.database.mongodbObjectId()
-
-const makeFakeSurveyResult = (): SurveyResultModel => ({
-  id: saveResultId,
-  accountId,
-  surveyId,
-  answer,
-  date: new Date()
-})
 
 const makeFakeRequest = (): HttpRequest => ({
   params: {
@@ -28,6 +19,8 @@ const makeFakeRequest = (): HttpRequest => ({
   },
   accountId
 })
+
+const surveyResult = mockSurveyResult(surveyId)
 
 const makeLoadSurverById = (): LoadSurveyById => {
   class LoadSurveyByIdStub implements LoadSurveyById {
@@ -42,7 +35,7 @@ const makeLoadSurverById = (): LoadSurveyById => {
 const makeSaveSurveyResult = (): SaveSurveyResult => {
   class SaveSurveyResultStub implements SaveSurveyResult {
     async save (_surveyData: SaveSurveyResultParams): Promise<SurveyResultModel> {
-      return makeFakeSurveyResult()
+      return surveyResult
     }
   }
 
@@ -135,6 +128,6 @@ describe('SaveSurveyResultController', () => {
   it('Should return ok on success', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(ok(makeFakeSurveyResult()))
+    expect(httpResponse).toEqual(ok(surveyResult))
   })
 })

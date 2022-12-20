@@ -1,7 +1,6 @@
-import { Collection } from 'mongodb'
-import { faker } from '@faker-js/faker'
+import { Collection, ObjectId } from 'mongodb'
 import { SurveyResultMongoRepository, MongoHelper } from '@/infra/db/mongodb'
-import { mockAddAccountParams, mockAddSurveyParams, mockSurveyResult } from '@/tests/mocks'
+import { mockAddAccountParams, mockAddSurveyParams, mockAnswer, mockSaveSurveyResultParams } from '@/tests/mocks'
 
 const makeSurvey = async (addSurveyData = mockAddSurveyParams()): Promise<string> => {
   const { insertedId } = await surveyCollection.insertOne(addSurveyData)
@@ -44,29 +43,25 @@ describe('Survey Result Mongo Repository', () => {
       const accountId = await makeAccount()
       const surveyId = await makeSurvey()
       const sut = makeSut()
-      const { id, ...saveSurveyResult } = mockSurveyResult(accountId, surveyId)
-      const surveyResult = await sut.saveResult(saveSurveyResult)
-      expect(surveyResult.id).toBeTruthy()
-      expect(surveyResult.accountId).toBe(accountId)
-      expect(surveyResult.surveyId).toBe(surveyId)
-      expect(surveyResult.answer).toBe(saveSurveyResult.answer)
-      expect(surveyResult.date).toEqual(saveSurveyResult.date)
+      const saveSurveyResultParams = mockSaveSurveyResultParams(surveyId, accountId)
+      const surveyResult = await sut.saveResult(saveSurveyResultParams)
+      expect(surveyResult.surveyId).toEqual(new ObjectId(surveyId))
+      expect(surveyResult.answers[0].answer).toBe(mockAnswer)
+      expect(surveyResult.answers[0].count).toBe(1)
+      expect(surveyResult.answers[0].percent).toBe(100)
     })
 
     it('Should update survey result if its not new', async () => {
       const accountId = await makeAccount()
       const surveyId = await makeSurvey()
-      const { id, ...saveSurveyResult } = mockSurveyResult(accountId, surveyId)
-      const { insertedId } = await surveyResultCollection.insertOne(saveSurveyResult)
-      const newAnswer = faker.datatype.string()
-      saveSurveyResult.answer = newAnswer
+      const survey = await surveyCollection.findOne({ _id: new ObjectId(surveyId) })
+      const saveSurveyResultParams = mockSaveSurveyResultParams(surveyId, accountId, survey.answers[0].answer)
       const sut = makeSut()
-      const surveyResult = await sut.saveResult(saveSurveyResult)
-      expect(surveyResult.id).toBe(insertedId.toHexString())
-      expect(surveyResult.accountId).toBe(accountId)
-      expect(surveyResult.surveyId).toBe(surveyId)
-      expect(surveyResult.answer).toBe(newAnswer)
-      expect(surveyResult.date).toEqual(saveSurveyResult.date)
+      const surveyResult = await sut.saveResult(saveSurveyResultParams)
+      expect(surveyResult.surveyId).toEqual(new ObjectId(surveyId))
+      expect(surveyResult.answers[0].answer).toBe(survey.answers[0].answer)
+      expect(surveyResult.answers[0].count).toBe(1)
+      expect(surveyResult.answers[0].percent).toBe(100)
     })
   })
 })
