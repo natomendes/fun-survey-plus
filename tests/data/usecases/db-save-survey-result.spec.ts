@@ -18,7 +18,7 @@ const makeSut = (surveyResult = mockSurveyResult()): SutTypes => {
 }
 
 describe('DbSaveSurveyResult', () => {
-  it('Should call SaveSurveyRepository with correct values', async () => {
+  it('Should call SaveSurveyResultRepository with correct values', async () => {
     const saveSurveyResultParams = mockSaveSurveyResultParams()
     const { sut, saveSurveyResultRepositoryStub } = makeSut()
     const saveResultSpy = jest.spyOn(saveSurveyResultRepositoryStub, 'saveResult')
@@ -35,7 +35,7 @@ describe('DbSaveSurveyResult', () => {
     expect(surveyResult).toEqual(surveyResultMock)
   })
 
-  it('Should throw if SaveSurveyRepository throws', async () => {
+  it('Should throw if SaveSurveyResultRepository throws', async () => {
     const { sut, saveSurveyResultRepositoryStub } = makeSut()
     jest.spyOn(saveSurveyResultRepositoryStub, 'saveResult')
       .mockRejectedValueOnce(new Error())
