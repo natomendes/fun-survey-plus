@@ -24,4 +24,11 @@ describe('DbLoadSurveyResult Usecase', () => {
     await sut.load(surveyResult.surveyId)
     expect(loadBySurveyIdSpy).toHaveBeenCalledWith(surveyResult.surveyId)
   })
+
+  it('Should return a survey result on success', async () => {
+    const surveyResultMock = mockSurveyResult()
+    const { sut } = makeSut(surveyResultMock)
+    const surveyResult = await sut.load(surveyResultMock.surveyId)
+    expect(surveyResult).toEqual(surveyResultMock)
+  })
 })
