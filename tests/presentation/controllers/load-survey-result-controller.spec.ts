@@ -1,58 +1,43 @@
-import { HttpRequest, LoadSurveyById, SaveSurveyResult } from '@/presentation/controllers/controllers-protocols'
-import { SaveSurveyResultController } from '@/presentation/controllers'
+import { HttpRequest, LoadSurveyById, LoadSurveyResult } from '@/presentation/controllers/controllers-protocols'
+import { LoadSurveyResultController } from '@/presentation/controllers'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http-helper'
 import { InvalidParamError, ServerError } from '@/presentation/errors'
+import { mockLoadSurverById, mockLoadSurveyResult, mockSurveyResult } from '@/tests/mocks'
 import { faker } from '@faker-js/faker'
-import MockDate from 'mockdate'
-import { mockAnswer, mockLoadSurverById, mockSaveSurveyResult, mockSurveyResult } from '@/tests/mocks'
 
-const answer = mockAnswer
-const accountId = faker.database.mongodbObjectId()
 const surveyId = faker.database.mongodbObjectId()
+const accountId = faker.database.mongodbObjectId()
+const surveyResult = mockSurveyResult(surveyId)
 
 const mockRequest = (): HttpRequest => ({
   params: {
     surveyId
   },
-  body: {
-    answer
-  },
   accountId
 })
 
-const surveyResult = mockSurveyResult(surveyId)
-
 type SutTypes = {
-  sut: SaveSurveyResultController
+  sut: LoadSurveyResultController
   loadSurverByIdStub: LoadSurveyById
-  saveSurveyResultStub: SaveSurveyResult
+  loadSurveyResultStub: LoadSurveyResult
 }
 
-const makeSut = (
-): SutTypes => {
+const makeSut = (): SutTypes => {
   const loadSurverByIdStub = mockLoadSurverById()
-  const saveSurveyResultStub = mockSaveSurveyResult(surveyResult)
-  const sut = new SaveSurveyResultController(loadSurverByIdStub, saveSurveyResultStub)
+  const loadSurveyResultStub = mockLoadSurveyResult(surveyResult)
+  const sut = new LoadSurveyResultController(loadSurverByIdStub, loadSurveyResultStub)
   return {
     sut,
     loadSurverByIdStub,
-    saveSurveyResultStub
+    loadSurveyResultStub
   }
 }
 
-describe('SaveSurveyResultController', () => {
-  beforeAll(() => {
-    MockDate.set(new Date())
-  })
-
-  afterAll(() => {
-    MockDate.reset()
-  })
+describe('LoadSurveyResultController', () => {
   it('Should call LoadSurveyById with correct value', async () => {
     const { sut, loadSurverByIdStub } = makeSut()
     const loadSpy = jest.spyOn(loadSurverByIdStub, 'load')
-    const httpRequest = mockRequest()
-    await sut.handle(httpRequest)
+    await sut.handle(mockRequest())
     expect(loadSpy).toHaveBeenCalledWith(surveyId)
   })
 
@@ -71,35 +56,16 @@ describe('SaveSurveyResultController', () => {
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
   })
 
-  it('Should return forbidden if an invalid answer is provided', async () => {
-    const { sut } = makeSut()
-    const httpResponse = await sut.handle({
-      params: {
-        surveyId
-      },
-      body: {
-        answer: faker.random.words()
-      }
-    })
-    expect(httpResponse).toEqual(forbidden(new InvalidParamError('answer')))
-  })
-
-  it('Should call SaveSurveyResult with correct values', async () => {
-    const { sut, saveSurveyResultStub } = makeSut()
-    const saveSpy = jest.spyOn(saveSurveyResultStub, 'save')
+  it('Should call LoadSurveyResult with correct value', async () => {
+    const { sut, loadSurveyResultStub } = makeSut()
+    const loadSpy = jest.spyOn(loadSurveyResultStub, 'load')
     await sut.handle(mockRequest())
-
-    expect(saveSpy).toHaveBeenCalledWith({
-      surveyId,
-      accountId,
-      answer,
-      date: new Date()
-    })
+    expect(loadSpy).toHaveBeenCalledWith(surveyId, accountId)
   })
 
-  it('Should return server error if SaveSurveyResult throws', async () => {
-    const { sut, saveSurveyResultStub } = makeSut()
-    jest.spyOn(saveSurveyResultStub, 'save')
+  it('Should return server error if LoadSurveyResult throws', async () => {
+    const { sut, loadSurveyResultStub } = makeSut()
+    jest.spyOn(loadSurveyResultStub, 'load')
       .mockRejectedValueOnce(new Error())
     const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))

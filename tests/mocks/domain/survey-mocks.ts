@@ -1,5 +1,5 @@
 import { SurveyModel } from '@/domain/models'
-import { AddSurvey, AddSurveyParams, LoadSurveys } from '@/domain/usecases'
+import { AddSurvey, AddSurveyParams, LoadSurveyById, LoadSurveys } from '@/domain/usecases'
 import { faker } from '@faker-js/faker'
 
 export const mockAnswer = faker.datatype.string()
@@ -36,10 +36,13 @@ export const mockAddSurveyParams = (): AddSurveyParams => ({
   date: new Date()
 })
 
-export const mockSurvey = (): SurveyModel => ({
-  id: faker.database.mongodbObjectId(),
+export const mockSurvey = (id = faker.database.mongodbObjectId()): SurveyModel => ({
+  id,
   question: faker.random.words(),
   answers: [{
+    image: faker.internet.url(),
+    answer: faker.random.word()
+  }, {
     image: faker.internet.url(),
     answer: mockAnswer
   }],
@@ -63,3 +66,13 @@ export const mockSurveyList = (): SurveyModel[] => [{
   }],
   date: new Date()
 }]
+
+export const mockLoadSurverById = (): LoadSurveyById => {
+  class LoadSurveyByIdStub implements LoadSurveyById {
+    async load (_surveyId: String): Promise<SurveyModel> {
+      return mockSurvey()
+    }
+  }
+
+  return new LoadSurveyByIdStub()
+}

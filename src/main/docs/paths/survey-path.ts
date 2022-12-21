@@ -5,6 +5,7 @@ export const surveyPath = {
     }],
     tags: ['Survey'],
     summary: 'Load surveys API',
+    description: 'This route is only available to authenticated users',
     responses: {
       200: {
         description: 'Successful operation',
@@ -33,6 +34,7 @@ export const surveyPath = {
     }],
     tags: ['Survey'],
     summary: 'Add survey API',
+    description: 'This route is only available to authenticated admin users',
     requestBody: {
       required: true,
       content: {
