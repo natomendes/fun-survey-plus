@@ -14,7 +14,7 @@ export default {
     url: 'https://spdx.org/licenses/GPL-3.0-or-later.html'
   },
   servers: [{
-    url: '/api'
+    url: 'https://surveyapi.up.railway.app/api'
   }],
   tags: [{
     name: 'Login'
